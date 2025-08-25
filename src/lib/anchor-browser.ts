@@ -6,8 +6,8 @@
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import * as anchor from '@coral-xyz/anchor';
 
-// Importar BN directamente de bn.js
-import BN from 'bn.js';
+// Importar el polyfill de BN
+import { initializeBNPolyfill, isBNAvailable, createSafeBN, BN } from './bn-polyfill';
 
 // Configuración de Anchor
 export const ANCHOR_CONFIG = {
@@ -117,11 +117,12 @@ export const PRESALE_IDL = {
 
 // Función para crear un programa Anchor compatible con el navegador
 export function createBrowserProgram(programId: string, connection: Connection, wallet: any) {
-  // Asegurarse de que BN esté disponible globalmente y en Anchor
-  if (typeof window !== 'undefined') {
-    (window as any).BN = BN;
-    // Asegurarse de que anchor.BN también esté definido correctamente
-    anchor.BN = BN;
+  // Inicializar el polyfill de BN antes que nada
+  initializeBNPolyfill();
+  
+  // Verificar que BN esté disponible
+  if (!isBNAvailable()) {
+    throw new Error('BN (BigNumber) not available in browser environment');
   }
   
   // Crear un proveedor compatible con el navegador
@@ -136,18 +137,20 @@ export function createBrowserProgram(programId: string, connection: Connection, 
     );
   } catch (error) {
     console.error("Error al crear el programa Anchor:", error);
+    console.error("BN available:", isBNAvailable());
+    console.error("Window BN:", typeof (window as any)?.BN);
     throw error;
   }
 }
 
 // Función para crear un BN desde un número
 export function createBN(value: number | string): BN {
-  return new BN(value);
+  return createSafeBN(value);
 }
 
 // Función para convertir SOL a lamports usando BN
 export function solToLamports(sol: number): BN {
-  return createBN(sol * 1e9);
+  return createSafeBN(sol * 1e9);
 }
 
 // Función para convertir lamports a SOL

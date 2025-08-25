@@ -1,7 +1,7 @@
 // Integration layer for Solana smart contracts
 import { Connection, PublicKey, Transaction, LAMPORTS_PER_SOL, SystemProgram } from '@solana/web3.js'
 import { getAssociatedTokenAddress, TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from '@solana/spl-token'
-import { createBrowserProgram, solToLamports, createBN } from '@/lib/anchor-browser'
+import { initializeProgramDynamic, isClientSide } from '@/lib/anchor-dynamic'
 
 // Program ID - will be updated after deployment
 const PRESALE_PROGRAM_ID = process.env.NEXT_PUBLIC_PRESALE_PROGRAM_ID 
@@ -39,9 +39,18 @@ export const initializeProgram = async (wallet: any, connection: Connection) => 
     throw new Error('Presale program not deployed yet')
   }
 
+  if (!isClientSide()) {
+    throw new Error('Program initialization can only happen on client side')
+  }
+
   try {
-    // Usar nuestra implementación compatible con el navegador
-    return createBrowserProgram(PRESALE_PROGRAM_ID, connection, wallet);
+    const result = await initializeProgramDynamic(PRESALE_PROGRAM_ID, connection, wallet)
+    
+    if (!result.success || !result.program) {
+      throw new Error(result.error || 'Failed to initialize program')
+    }
+    
+    return result.program
   } catch (error) {
     console.error('Failed to initialize program:', error)
     throw error
@@ -109,7 +118,8 @@ export const purchaseTokensWithSOL = async (
       throw new Error('Failed to derive PDAs')
     }
 
-    // Convert SOL to lamports using our helper
+    // Convert SOL to lamports 
+    const { solToLamports } = await import('@/lib/anchor-browser')
     const solAmountLamports = solToLamports(solAmount)
 
     // Create transaction
