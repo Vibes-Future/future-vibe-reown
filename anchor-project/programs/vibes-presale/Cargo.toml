@@ -1,0 +1,22 @@
+[package]
+name = "vibes-presale"
+version = "0.1.0"
+description = "VIBES Token Presale with Vesting Smart Contract"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "vibes_presale"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+
+[dependencies]
+anchor-lang = "0.30.1"
+anchor-spl = "0.30.1"
+spl-token = "4.0.0"
+spl-associated-token-account = "2.3.0"

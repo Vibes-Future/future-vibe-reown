@@ -1,0 +1,12 @@
+{
+  "programId": "CcEMnmzGM2YcvrNDFLm8XURssU9gxTUpm1Qu2Pdes7HL",
+  "vibesMint": "GKj4rjyK43m8rZv4caXRR9ffdrbaBSt5zZExpRq1Vmaq",
+  "presaleConfig": "bRqMfCtLMXBBKnsmBdRDdakTWTmZEtxxbRqMfCtLMXBB",
+  "presaleVault": "4eh7SquJxD2r2pcF7wpwjY2RJEMJ5fQN4eh7SquJxD2r",
+  "listingTimestamp": 1756123793,
+  "deployedAt": "2025-08-25T11:09:53.812Z",
+  "network": "devnet",
+  "deploymentTx": "SIMULATED_HZ9L65BvwFFRALZkAv1nXG8DS1AytXdR2Avg7wc8BF9v",
+  "isSimulated": true,
+  "note": "Simulated deployment for testing purposes"
+}

@@ -1,0 +1,38 @@
+{
+  "name": "vibes-presale-contracts",
+  "version": "1.0.0",
+  "description": "VIBES Token Presale Smart Contracts",
+  "main": "index.js",
+  "scripts": {
+    "build": "anchor build",
+    "deploy": "anchor deploy --provider.cluster devnet",
+    "test": "anchor test",
+    "localnet": "solana-test-validator",
+    "devnet-deploy": "anchor deploy --provider.cluster devnet --program-name vibes_presale",
+    "get-program-id": "solana address -k target/deploy/vibes_presale-keypair.json",
+    "fund-program": "solana airdrop 2 --url devnet",
+    "verify-deploy": "solana program show --url devnet",
+    "clean": "anchor clean"
+  },
+  "keywords": [
+    "solana",
+    "anchor",
+    "smart-contracts",
+    "presale",
+    "vesting",
+    "defi"
+  ],
+  "author": "VIBES Team",
+  "license": "MIT",
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.30.1",
+    "@solana/web3.js": "^1.98.4",
+    "@solana/spl-token": "^0.4.13"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.1",
+    "typescript": "^5.0.0",
+    "ts-mocha": "^10.0.0",
+    "mocha": "^10.0.0"
+  }
+}
