@@ -110,19 +110,30 @@ export const useSmartContractVesting = (): UseSmartContractVestingReturn => {
       const purchaseData = await getUserPurchaseData(connection, userPublicKey)
       
       if (purchaseData) {
-        setUserPurchase({
-          userAddress: purchaseData.user.toString(),
-          totalTokensPurchased: Number(purchaseData.totalTokensPurchased || 0),
-          totalSOLSpent: Number(purchaseData.totalSolSpent || 0),
-          totalUSDCSpent: Number(purchaseData.totalUsdcSpent || 0),
-          purchaseCount: Number(purchaseData.purchaseCount || 0),
-          vestingSchedule: {
-            totalTokens: Number(purchaseData.totalTokensPurchased || 0),
-            listingTimestamp: Number(configData?.listingTimestamp || 0),
-            claimedAmounts: purchaseData.vestingSchedule?.claimedAmounts?.map((a: any) => Number(a)) || [0, 0, 0, 0],
-            claimedFlags: purchaseData.vestingSchedule?.claimedFlags || [false, false, false, false]
-          }
-        })
+        try {
+          setUserPurchase({
+            userAddress: purchaseData.user?.toString() || address,
+            totalTokensPurchased: Number(purchaseData.totalTokensPurchased || 0),
+            totalSOLSpent: Number(purchaseData.totalSolSpent || 0),
+            totalUSDCSpent: Number(purchaseData.totalUsdcSpent || 0),
+            purchaseCount: Number(purchaseData.purchaseCount || 0),
+            vestingSchedule: {
+              totalTokens: Number(purchaseData.totalTokensPurchased || 0),
+              listingTimestamp: Number(configData?.listingTimestamp || 0),
+              claimedAmounts: Array.isArray(purchaseData.vestingSchedule?.claimedAmounts) 
+                ? purchaseData.vestingSchedule.claimedAmounts.map((a: any) => Number(a)) 
+                : [0, 0, 0, 0],
+              claimedFlags: Array.isArray(purchaseData.vestingSchedule?.claimedFlags)
+                ? purchaseData.vestingSchedule.claimedFlags
+                : [false, false, false, false]
+            }
+          })
+        } catch (parseError) {
+          console.error('Error parsing purchase data:', parseError);
+          console.log('Raw purchase data:', purchaseData);
+          setError('Error parsing purchase data from blockchain');
+          setUserPurchase(null);
+        }
         
         console.log('✅ Smart contract data loaded:', {
           totalPurchased: Number(purchaseData.totalTokensPurchased),

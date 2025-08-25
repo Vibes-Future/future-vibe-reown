@@ -253,14 +253,26 @@ export const getUserPurchaseData = async (
       throw new Error('Program not deployed')
     }
 
-    // Create a dummy wallet for read-only operations
-    const dummyWallet = {
+    // Create a wallet adapter compatible con Anchor
+    const walletAdapter = {
       publicKey: userPublicKey,
       signTransaction: async (tx: Transaction) => tx,
-      signAllTransactions: async (txs: Transaction[]) => txs
+      signAllTransactions: async (txs: Transaction[]) => txs,
+      // Añadir métodos adicionales que Anchor podría necesitar
+      signMessage: async (message: Uint8Array) => message,
+      connect: async () => {},
+      disconnect: async () => {}
     }
 
-    const program = await initializeProgram(dummyWallet, connection)
+    // Inicializar programa con manejo de errores
+    let program;
+    try {
+      program = await initializeProgram(walletAdapter, connection);
+    } catch (initError) {
+      console.error('Failed to initialize program in getUserPurchaseData:', initError);
+      return null;
+    }
+
     const userPurchase = getUserPurchasePDA(userPublicKey)
 
     if (!userPurchase) {
@@ -270,9 +282,16 @@ export const getUserPurchaseData = async (
     try {
       const userPurchaseData = await program.account.userPurchase.fetch(userPurchase)
       return userPurchaseData
-    } catch (error) {
-      // Account might not exist yet - this is normal for new users
-      return null
+    } catch (error: any) {
+      // Verificar si el error es porque la cuenta no existe
+      if (error.message?.includes('Account does not exist') || 
+          error.message?.includes('not found')) {
+        console.log('User purchase account not found - this is normal for new users');
+        return null;
+      }
+      
+      console.error('Error fetching user purchase data:', error);
+      return null;
     }
 
   } catch (error) {
@@ -290,14 +309,26 @@ export const getPresaleConfigData = async (
       throw new Error('Program not deployed')
     }
 
-    // Create a dummy wallet for read-only operations
-    const dummyWallet = {
+    // Create a wallet adapter compatible con Anchor
+    const walletAdapter = {
       publicKey: new PublicKey('11111111111111111111111111111111'),
       signTransaction: async (tx: Transaction) => tx,
-      signAllTransactions: async (txs: Transaction[]) => txs
+      signAllTransactions: async (txs: Transaction[]) => txs,
+      // Añadir métodos adicionales que Anchor podría necesitar
+      signMessage: async (message: Uint8Array) => message,
+      connect: async () => {},
+      disconnect: async () => {}
     }
 
-    const program = await initializeProgram(dummyWallet, connection)
+    // Inicializar programa con manejo de errores
+    let program;
+    try {
+      program = await initializeProgram(walletAdapter, connection);
+    } catch (initError) {
+      console.error('Failed to initialize program in getPresaleConfigData:', initError);
+      return null;
+    }
+    
     const presaleConfig = getPresaleConfigPDA()
 
     if (!presaleConfig) {
@@ -307,9 +338,16 @@ export const getPresaleConfigData = async (
     try {
       const configData = await program.account.presaleConfig.fetch(presaleConfig)
       return configData
-    } catch (error) {
-      // Account might not exist yet - this is normal during initialization
-      return null
+    } catch (error: any) {
+      // Verificar si el error es porque la cuenta no existe
+      if (error.message?.includes('Account does not exist') || 
+          error.message?.includes('not found')) {
+        console.log('Presale config account not found - this is normal during initialization');
+        return null;
+      }
+      
+      console.error('Error fetching presale config data:', error);
+      return null;
     }
 
   } catch (error) {

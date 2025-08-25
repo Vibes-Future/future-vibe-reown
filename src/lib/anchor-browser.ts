@@ -117,18 +117,27 @@ export const PRESALE_IDL = {
 
 // Función para crear un programa Anchor compatible con el navegador
 export function createBrowserProgram(programId: string, connection: Connection, wallet: any) {
-  // Asegurarse de que BN esté disponible globalmente
-  (window as any).BN = BN;
+  // Asegurarse de que BN esté disponible globalmente y en Anchor
+  if (typeof window !== 'undefined') {
+    (window as any).BN = BN;
+    // Asegurarse de que anchor.BN también esté definido correctamente
+    anchor.BN = BN;
+  }
   
   // Crear un proveedor compatible con el navegador
   const provider = BrowserAnchorProvider.create(connection, wallet);
   
-  // Crear y devolver el programa
-  return new anchor.Program(
-    PRESALE_IDL,
-    new PublicKey(programId),
-    provider
-  );
+  try {
+    // Crear y devolver el programa con manejo explícito de errores
+    return new anchor.Program(
+      PRESALE_IDL,
+      new PublicKey(programId),
+      provider
+    );
+  } catch (error) {
+    console.error("Error al crear el programa Anchor:", error);
+    throw error;
+  }
 }
 
 // Función para crear un BN desde un número
