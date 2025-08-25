@@ -36,8 +36,8 @@ export async function initializeProgramDynamic(
     // Import dinámico del módulo de Anchor
     const { createBrowserProgram } = await import('./anchor-browser')
     
-    // Crear el programa
-    const program = createBrowserProgram(programId, connection, wallet)
+    // Crear el programa (ahora es async)
+    const program = await createBrowserProgram(programId, connection, wallet)
     
     return {
       success: true,

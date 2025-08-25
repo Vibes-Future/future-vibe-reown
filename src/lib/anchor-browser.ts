@@ -6,8 +6,8 @@
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import * as anchor from '@coral-xyz/anchor';
 
-// Importar el polyfill de BN
-import { initializeBNPolyfill, isBNAvailable, createSafeBN, BN } from './bn-polyfill';
+// Importar los polyfills específicos para Solana
+import { initializeSolanaPolyfills, verifySolanaPolyfills, createSafeBN, BN } from './solana-web3-polyfill';
 
 // Configuración de Anchor
 export const ANCHOR_CONFIG = {
@@ -117,30 +117,37 @@ export const PRESALE_IDL = {
 
 // Función para crear un programa Anchor compatible con el navegador
 export function createBrowserProgram(programId: string, connection: Connection, wallet: any) {
-  // Inicializar el polyfill de BN antes que nada
-  initializeBNPolyfill();
+  // Inicializar todos los polyfills de Solana
+  initializeSolanaPolyfills();
   
-  // Verificar que BN esté disponible
-  if (!isBNAvailable()) {
-    throw new Error('BN (BigNumber) not available in browser environment');
+  // Verificar que los polyfills funcionan correctamente
+  if (!verifySolanaPolyfills()) {
+    throw new Error('Solana polyfills failed verification');
   }
   
-  // Crear un proveedor compatible con el navegador
-  const provider = BrowserAnchorProvider.create(connection, wallet);
-  
-  try {
-    // Crear y devolver el programa con manejo explícito de errores
-    return new anchor.Program(
-      PRESALE_IDL,
-      new PublicKey(programId),
-      provider
-    );
-  } catch (error) {
-    console.error("Error al crear el programa Anchor:", error);
-    console.error("BN available:", isBNAvailable());
-    console.error("Window BN:", typeof (window as any)?.BN);
-    throw error;
-  }
+  // Pequeña pausa para asegurar que los polyfills se han aplicado
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      try {
+        // Crear un proveedor compatible con el navegador
+        const provider = BrowserAnchorProvider.create(connection, wallet);
+        
+        // Crear el programa con manejo de errores mejorado
+        const program = new anchor.Program(
+          PRESALE_IDL,
+          new PublicKey(programId),
+          provider
+        );
+        
+        resolve(program);
+      } catch (error) {
+        console.error("Error al crear el programa Anchor:", error);
+        console.error("Polyfills verified:", verifySolanaPolyfills());
+        console.error("Window BN:", typeof (window as any)?.BN);
+        reject(error);
+      }
+    }, 100); // Pequeña pausa de 100ms
+  });
 }
 
 // Función para crear un BN desde un número

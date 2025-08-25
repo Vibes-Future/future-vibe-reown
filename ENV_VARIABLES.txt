@@ -1,0 +1,31 @@
+# VARIABLES DE ENTORNO PARA EL DEPLOYMENT
+# Copia estas variables a tu archivo .env.local
+
+# Reown (WalletConnect) Configuration
+NEXT_PUBLIC_PROJECT_ID="2f5f0eeb6421b4ad82a6cf1f7e5e3b71"
+
+# Helius RPC Configuration (for better reliability than public endpoints)  
+NEXT_PUBLIC_SOLANA_RPC_URL="https://devnet.helius-rpc.com/?api-key=fe03ccb4-5ca7-4b5b-a894-0b25a5a7cece"
+
+# Program IDs (deployed on Devnet)
+NEXT_PUBLIC_PRESALE_PROGRAM_ID="CcEMnmzGM2YcvrNDFLm8XURssU9gxTUpm1Qu2Pdes7HL"
+NEXT_PUBLIC_TOKEN_MINT_ADDRESS="H9tGWLawkLMGzqxvqDNn35c5yNNjmFGoLHFzdfidi2YK"
+
+# Environment
+NODE_ENV=development
+
+# INSTRUCCIONES:
+# 1. Copia todo el contenido desde "NEXT_PUBLIC_PROJECT_ID" hasta "NODE_ENV=development"
+# 2. Pégalo en tu archivo .env.local 
+# 3. Reinicia el servidor de desarrollo (npm run dev)
+
+# INFORMACIÓN ADICIONAL:
+# - Program ID del Smart Contract: CcEMnmzGM2YcvrNDFLm8XURssU9gxTUpm1Qu2Pdes7HL
+# - Token Mint Address (VIBES): H9tGWLawkLMGzqxvqDNn35c5yNNjmFGoLHFzdfidi2YK
+# - Red: Solana Devnet
+# - Token creado con signature: 3RVwZMfMWniKdbEDMfYbdpcpYJrCwigMn1F7QWXVEZ8xd34gotEjrkBdbnPMkLYjb1xZu5vArMJmyTa2MCbsQrwv
+
+# SIGUIENTE PASO:
+# Una vez que copies las variables, la aplicación intentará hacer transacciones reales 
+# en lugar de simuladas. El smart contract aún necesita ser desplegado completamente,
+# pero ya tienes los Program IDs correctos configurados.

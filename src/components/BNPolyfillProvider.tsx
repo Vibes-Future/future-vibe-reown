@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { initializeBNPolyfill } from '@/lib/bn-polyfill'
+import { initializeSolanaPolyfills } from '@/lib/solana-web3-polyfill'
 
 interface BNPolyfillProviderProps {
   children: React.ReactNode
@@ -9,8 +9,8 @@ interface BNPolyfillProviderProps {
 
 export default function BNPolyfillProvider({ children }: BNPolyfillProviderProps) {
   useEffect(() => {
-    // Inicializar el polyfill de BN tan pronto como se monte el componente
-    initializeBNPolyfill()
+    // Inicializar todos los polyfills de Solana tan pronto como se monte el componente
+    initializeSolanaPolyfills()
   }, [])
 
   return <>{children}</>

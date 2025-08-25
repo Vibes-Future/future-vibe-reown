@@ -8,11 +8,11 @@ import {
   getUserPurchaseData,
   getPresaleConfigData,
   getExplorerUrl,
+  getConnection,
   isSmartContractDeployed,
   PurchaseResult,
   ClaimResult
-} from '@/utils/solana-integration'  // Cambiado a solana-integration
-import { connection } from '@/config/solana'
+} from '@/utils/solana-direct'  // Cambiado a transacciones directas
 
 interface SmartContractPurchase {
   userAddress: string
@@ -92,6 +92,7 @@ export const useSmartContractVesting = (): UseSmartContractVestingReturn => {
       console.log('🔗 Loading data from smart contracts...')
       
       // Load presale configuration
+      const connection = getConnection()
       const configData = await getPresaleConfigData(connection)
       if (configData) {
         setPresaleConfig({
@@ -164,7 +165,8 @@ export const useSmartContractVesting = (): UseSmartContractVestingReturn => {
     try {
       console.log('🛒 [SMART CONTRACT] Purchasing tokens with SOL:', { solAmount })
       
-      const result = await purchaseTokensWithSOL(walletProvider, connection, solAmount)
+      const connection = getConnection()
+    const result = await purchaseTokensWithSOL(walletProvider, connection, solAmount)
       
       if (result.success && result.signature) {
         setLastTransaction(result.signature)
@@ -202,7 +204,8 @@ export const useSmartContractVesting = (): UseSmartContractVestingReturn => {
     try {
       console.log('💎 [SMART CONTRACT] Claiming tokens for period:', period)
       
-      const result = await claimVestedTokens(walletProvider, connection, period)
+      const connection = getConnection()
+    const result = await claimVestedTokens(walletProvider, connection, period)
       
       if (result.success && result.signature) {
         setLastTransaction(result.signature)

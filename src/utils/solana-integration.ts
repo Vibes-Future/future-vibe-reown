@@ -1,7 +1,15 @@
 // Integration layer for Solana smart contracts
 import { Connection, PublicKey, Transaction, LAMPORTS_PER_SOL, SystemProgram } from '@solana/web3.js'
 import { getAssociatedTokenAddress, TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from '@solana/spl-token'
-import { initializeProgramDynamic, isClientSide } from '@/lib/anchor-dynamic'
+
+// Importar la implementación segura de Anchor
+import { 
+  createSafeProgram, 
+  createSafePublicKey, 
+  derivePDA, 
+  createSafeBN,
+  type SafeProgram 
+} from '@/lib/anchor-safe'
 
 // Program ID - will be updated after deployment
 const PRESALE_PROGRAM_ID = process.env.NEXT_PUBLIC_PRESALE_PROGRAM_ID 
@@ -9,7 +17,7 @@ const PRESALE_PROGRAM_ID = process.env.NEXT_PUBLIC_PRESALE_PROGRAM_ID
   : null
 
 const VIBES_MINT = process.env.NEXT_PUBLIC_TOKEN_MINT_ADDRESS
-  ? new PublicKey(process.env.NEXT_PUBLIC_TOKEN_MINT_ADDRESS)
+  ? createSafePublicKey(process.env.NEXT_PUBLIC_TOKEN_MINT_ADDRESS)
   : null
 
 // Check if smart contracts are deployed
@@ -33,52 +41,52 @@ export interface ClaimResult extends TransactionResult {
   period?: number
 }
 
-// Initialize program connection
-export const initializeProgram = async (wallet: any, connection: Connection) => {
+// Initialize program connection using safe implementation
+export const initializeProgram = async (wallet: any, connection: Connection): Promise<SafeProgram> => {
   if (!PRESALE_PROGRAM_ID) {
     throw new Error('Presale program not deployed yet')
   }
 
-  if (!isClientSide()) {
-    throw new Error('Program initialization can only happen on client side')
-  }
-
   try {
-    const result = await initializeProgramDynamic(PRESALE_PROGRAM_ID, connection, wallet)
-    
-    if (!result.success || !result.program) {
-      throw new Error(result.error || 'Failed to initialize program')
-    }
-    
-    return result.program
+    console.log('🔄 Initializing safe program...')
+    const program = await createSafeProgram(PRESALE_PROGRAM_ID, connection, wallet)
+    console.log('✅ Safe program initialized successfully')
+    return program
   } catch (error) {
-    console.error('Failed to initialize program:', error)
+    console.error('❌ Failed to initialize safe program:', error)
     throw error
   }
 }
 
-// Get presale configuration PDA
+// Get presale configuration PDA using safe implementation
 export const getPresaleConfigPDA = () => {
   if (!PRESALE_PROGRAM_ID) return null
   
-  const [presaleConfig] = PublicKey.findProgramAddressSync(
-    [Buffer.from('presale_config')],
-    new PublicKey(PRESALE_PROGRAM_ID)
-  )
-  
-  return presaleConfig
+  try {
+    const programId = createSafePublicKey(PRESALE_PROGRAM_ID)
+    const [presaleConfig] = derivePDA([Buffer.from('presale_config')], programId)
+    return presaleConfig
+  } catch (error) {
+    console.error('Error deriving presale config PDA:', error)
+    return null
+  }
 }
 
-// Get user purchase PDA
+// Get user purchase PDA using safe implementation
 export const getUserPurchasePDA = (userPublicKey: PublicKey) => {
   if (!PRESALE_PROGRAM_ID) return null
   
-  const [userPurchase] = PublicKey.findProgramAddressSync(
-    [Buffer.from('user_purchase'), userPublicKey.toBuffer()],
-    new PublicKey(PRESALE_PROGRAM_ID)
-  )
-  
-  return userPurchase
+  try {
+    const programId = createSafePublicKey(PRESALE_PROGRAM_ID)
+    const [userPurchase] = derivePDA(
+      [Buffer.from('user_purchase'), userPublicKey.toBuffer()],
+      programId
+    )
+    return userPurchase
+  } catch (error) {
+    console.error('Error deriving user purchase PDA:', error)
+    return null
+  }
 }
 
 // Get presale vault PDA

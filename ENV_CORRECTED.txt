@@ -1,0 +1,32 @@
+# VARIABLES DE ENTORNO CORREGIDAS
+# =======================================
+# Copia este contenido COMPLETO a tu archivo .env.local
+
+# Reown (WalletConnect) Configuration
+NEXT_PUBLIC_PROJECT_ID=2f5f0eeb6421b4ad82a6cf1f7e5e3b71
+
+# Solana Network Configuration (RPC público gratuito)
+NEXT_PUBLIC_SOLANA_RPC_URL=https://api.devnet.solana.com
+NEXT_PUBLIC_SOLANA_NETWORK=devnet
+
+# Program IDs (deployed on Devnet)
+NEXT_PUBLIC_PRESALE_PROGRAM_ID=CcEMnmzGM2YcvrNDFLm8XURssU9gxTUpm1Qu2Pdes7HL
+NEXT_PUBLIC_TOKEN_MINT_ADDRESS=H9tGWLawkLMGzqxvqDNn35c5yNNjmFGoLHFzdfidi2YK
+
+# App Configuration
+NEXT_PUBLIC_APP_NAME=VIBES Token Presale
+NEXT_PUBLIC_APP_DESCRIPTION=A decentralized application for token presale and staking on Solana
+
+# Environment
+NODE_ENV=development
+
+# IMPORTANTE: 
+# - Removí el API key de Helius inválido
+# - Ahora usa el RPC público de Devnet que siempre funciona
+# - Mantiene todos los Program IDs correctos
+
+# PASOS:
+# 1. Copia todo desde "NEXT_PUBLIC_PROJECT_ID" hasta "NODE_ENV=development"
+# 2. Pégalo en tu .env.local (reemplaza todo el contenido)
+# 3. Reinicia el servidor: npm run dev
+# 4. Prueba hacer una compra - debería funcionar sin errores 401

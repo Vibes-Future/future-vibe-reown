@@ -4,10 +4,10 @@ import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 import { solana, solanaTestnet, solanaDevnet } from '@reown/appkit/networks'
 
 // Get project ID from environment variables
-const projectId = process.env.NEXT_PUBLIC_REOWN_PROJECT_ID
+const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
 
 if (!projectId) {
-  throw new Error('NEXT_PUBLIC_REOWN_PROJECT_ID is not set')
+  throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
 }
 
 // Custom RPC URL from Helius or other provider
