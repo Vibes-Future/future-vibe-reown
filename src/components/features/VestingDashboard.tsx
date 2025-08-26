@@ -108,13 +108,13 @@ export function VestingDashboard() {
       <div className="bg-BG-FFF-8 backdrop-blur-sm rounded-2xl p-8 border border-stroct-1">
         <div className="text-center">
           <h3 className="my-text-24 gap-mb-16 gradient-text-primary">Vesting & Claims</h3>
-          <p className="text-foundation-blue-60">No tienes compras registradas aún</p>
+          <p className="text-foundation-blue-60">You don't have any registered purchases yet</p>
           <p className="text-sm text-foundation-blue-50 mt-2">
-            Compra VIBES tokens en la sección Presale para ver tu cronograma de vesting aquí
+            Buy VIBES tokens in the Presale section to see your vesting schedule here
           </p>
           {isUsingSmartContracts && (
             <p className="text-xs text-primary-1 mt-2">
-              🔗 Conectado a Smart Contract Mode
+              🔗 Connected to Smart Contract Mode
             </p>
           )}
         </div>
@@ -131,7 +131,7 @@ export function VestingDashboard() {
           disabled={isLoading}
           className="text-sm text-primary-1 hover:text-primary-2 disabled:opacity-50 my-transition"
         >
-          {isLoading ? 'Actualizando...' : '🔄 Actualizar'}
+          {isLoading ? 'Updating...' : '🔄 Refresh'}
         </button>
       </div>
 
@@ -147,28 +147,28 @@ export function VestingDashboard() {
           <div className="text-2xl font-bold text-white">
             {formatTokens(totalTokensPurchased)}
           </div>
-          <div className="text-sm text-foundation-blue-60">Total Comprado</div>
+          <div className="text-sm text-foundation-blue-60">Total Purchased</div>
         </div>
         
         <div className="bg-primary-1/20 border border-primary-1/30 rounded-lg p-4 text-center">
           <div className="text-2xl font-bold text-primary-1">
             {formatTokens(totalClaimableNow)}
           </div>
-          <div className="text-sm text-foundation-blue-60">Disponible Ahora</div>
+          <div className="text-sm text-foundation-blue-60">Available Now</div>
         </div>
         
         <div className="bg-highlight-1/20 border border-highlight-1/30 rounded-lg p-4 text-center">
           <div className="text-2xl font-bold text-highlight-1">
             {formatTokens(totalClaimed)}
           </div>
-          <div className="text-sm text-foundation-blue-60">Ya Reclamado</div>
+          <div className="text-sm text-foundation-blue-60">Already Claimed</div>
         </div>
         
         <div className="bg-BG-FFF-8 rounded-lg p-4 text-center border border-stroct-1">
           <div className="text-2xl font-bold text-white">
             {formatTokens(totalRemaining)}
           </div>
-          <div className="text-sm text-foundation-blue-60">Pendiente</div>
+          <div className="text-sm text-foundation-blue-60">Pending</div>
         </div>
       </div>
 
@@ -184,15 +184,15 @@ export function VestingDashboard() {
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <h4 className="text-lg font-semibold text-white">
-                    Compra #{purchase.id.slice(-8)}
+                    Purchase #{purchase.id.slice(-8)}
                   </h4>
                   <p className="text-sm text-foundation-blue-60">
-                    {purchase.purchaseDate.toLocaleDateString('es-ES')} • 
+                    {purchase.purchaseDate.toLocaleDateString('en-US')} • 
                     {formatTokens(purchase.tokensPurchased)} VIBES
                   </p>
                 </div>
                 <div className="text-right">
-                  <div className="text-sm text-foundation-blue-60">Progreso del Vesting</div>
+                  <div className="text-sm text-foundation-blue-60">Vesting Progress</div>
                   <div className="text-lg font-semibold text-white">
                     {progress.toFixed(1)}%
                   </div>
@@ -225,7 +225,7 @@ export function VestingDashboard() {
                     >
                       <div className="text-center">
                         <div className="text-sm text-gray-400 mb-1">
-                          Período {period.period}
+                          Period {period.period}
                         </div>
                         <div className="text-lg font-semibold text-white">
                           {period.percentage}%
@@ -234,12 +234,12 @@ export function VestingDashboard() {
                           {formatTokens(period.amount)} VIBES
                         </div>
                         <div className="text-xs text-gray-500 mb-3">
-                          {period.claimDate.toLocaleDateString('es-ES')}
+                          {period.claimDate.toLocaleDateString('en-US')}
                         </div>
                         
                         {period.isClaimed ? (
                           <div className="text-xs text-green-400 font-medium">
-                            ✅ Reclamado
+                            ✅ Claimed
                           </div>
                         ) : period.isAvailable ? (
                           <button
@@ -247,11 +247,11 @@ export function VestingDashboard() {
                             disabled={isClaimingThis || isLoading}
                             className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white text-xs py-2 px-3 rounded transition-colors"
                           >
-                            {isClaimingThis ? 'Reclamando...' : 'Reclamar'}
+                            {isClaimingThis ? 'Claiming...' : 'Claim'}
                           </button>
                         ) : (
                           <div className="text-xs text-gray-500">
-                            🔒 Bloqueado
+                            🔒 Locked
                           </div>
                         )}
                       </div>
@@ -264,7 +264,7 @@ export function VestingDashboard() {
               {claimable.nextClaimDate && (
                 <div className="mt-4 p-3 bg-purple-600/20 border border-purple-500/30 rounded-lg">
                   <div className="text-sm text-purple-400">
-                    📅 Próximo claim disponible: {claimable.nextClaimDate.toLocaleDateString('es-ES')} • 
+                    📅 Next claim available: {claimable.nextClaimDate.toLocaleDateString('en-US')} • 
                     {formatTokens(claimable.nextClaimAmount)} VIBES
                   </div>
                 </div>
@@ -276,13 +276,13 @@ export function VestingDashboard() {
 
       {/* Instructions */}
       <div className="mt-8 p-4 bg-blue-600/10 border border-blue-500/20 rounded-lg">
-        <h4 className="font-semibold text-blue-400 mb-2">💡 Cómo funciona el Vesting:</h4>
+        <h4 className="font-semibold text-blue-400 mb-2">💡 How Vesting Works:</h4>
         <ul className="text-sm text-gray-300 space-y-1">
-          <li>• <strong>40%</strong> disponible inmediatamente después del listing</li>
-          <li>• <strong>20%</strong> cada mes durante 3 meses adicionales</li>
-          <li>• Los tokens se pueden reclamar individualmente por período</li>
-          <li>• Una vez reclamados, los tokens van directamente a tu wallet</li>
-          <li>• {isUsingSmartContracts ? '🔗 Usando smart contracts en Solana' : '🎮 Modo simulación activo'}</li>
+          <li>• <strong>40%</strong> available immediately after listing</li>
+          <li>• <strong>20%</strong> each month for 3 additional months</li>
+          <li>• Tokens can be claimed individually per period</li>
+          <li>• Once claimed, tokens go directly to your wallet</li>
+          <li>• {isUsingSmartContracts ? '🔗 Using smart contracts on Solana' : '🎮 Simulation mode active'}</li>
         </ul>
       </div>
 

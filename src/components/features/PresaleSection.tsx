@@ -87,12 +87,12 @@ export function PresaleSection() {
 
   const handlePurchase = async () => {
     if (!isConnected || !walletProvider) {
-      alert('Por favor conecta tu wallet primero')
+      alert('Please connect your wallet first')
       return
     }
 
     if (!presaleData.isActive) {
-      alert('El presale no está activo en este momento')
+      alert('The presale is not active at this time')
       return
     }
 
@@ -114,7 +114,7 @@ export function PresaleSection() {
     }
 
     if (!amount || amount < minAmount || amount > maxAmount) {
-      alert(`Por favor ingresa una cantidad entre ${minAmount} y ${maxAmount} ${currency}`)
+      alert(`Please enter an amount between ${minAmount} and ${maxAmount} ${currency}`)
       return
     }
 
@@ -134,17 +134,17 @@ export function PresaleSection() {
         }
         
         if (result.success) {
-          alert(`¡Compra exitosa en Blockchain! 
+          alert(`Successful purchase on Blockchain! 
           
-🎉 Has comprado ${formatTokens(result.vibesAmount || vibesTokens)} VIBES tokens
-💰 Pagaste ${amount} ${currency}
-🔗 Transacción: ${result.signature}
-📅 Vesting Schedule almacenado en blockchain:
-• 40% disponible después del listing
-• 20% cada mes por 3 meses adicionales
+🎉 You have purchased ${formatTokens(result.vibesAmount || vibesTokens)} VIBES tokens
+💰 You paid ${amount} ${currency}
+🔗 Transaction: ${result.signature}
+📅 Vesting Schedule stored on blockchain:
+• 40% available after listing
+• 20% each month for 3 additional months
 
-Ve a la sección "Claims" para reclamar tus tokens cuando estén disponibles.
-🔍 Ver en Solscan: ${result.explorerUrl}`)
+Go to the "Claims" section to claim your tokens when they are available.
+🔍 View on Solscan: ${result.explorerUrl}`)
         } else {
           throw new Error(result.error || 'Smart contract purchase failed')
         }
@@ -161,17 +161,17 @@ Ve a la sección "Claims" para reclamar tus tokens cuando estén disponibles.
           transactionSignature: '' // Will be set by addPurchase
         })
         
-        alert(`¡Compra exitosa (Simulación)! 
+        alert(`Successful purchase (Simulation)! 
         
-🎉 Has comprado ${formatTokens(vibesTokens)} VIBES tokens
-💰 Pagaste ${sol} SOL
+🎉 You have purchased ${formatTokens(vibesTokens)} VIBES tokens
+💰 You paid ${sol} SOL
 📅 Vesting Schedule:
-• 40% disponible después del listing
-• 20% cada mes por 3 meses adicionales
+• 40% available after listing
+• 20% each month for 3 additional months
 
-Ve a la sección "Claims" para reclamar tus tokens cuando estén disponibles.
+Go to the "Claims" section to claim your tokens when they are available.
 
-⚠️ Modo simulación - Para transacciones reales, despliega los smart contracts.`)
+⚠️ Simulation mode - For real transactions, deploy the smart contracts.`)
       }
       
       // Clear input fields
@@ -179,7 +179,7 @@ Ve a la sección "Claims" para reclamar tus tokens cuando estén disponibles.
       setUsdcAmount('')
     } catch (error) {
       console.error('Purchase failed:', error)
-      alert('Error en la compra. Por favor intenta de nuevo.')
+      alert('Purchase error. Please try again.')
     } finally {
       setIsLoading(false)
     }
@@ -250,19 +250,19 @@ Ve a la sección "Claims" para reclamar tus tokens cuando estén disponibles.
             </div>
           ) : nextPeriod ? (
             <div className="bg-gradient-to-r from-highlight-1/20 to-highlight-2/20 rounded-lg p-4 border border-highlight-1/30">
-              <div className="text-sm text-foundation-blue-60 mb-1">Próximo Período</div>
+              <div className="text-sm text-foundation-blue-60 mb-1">Next Period</div>
               <div className="text-xl font-bold text-white">
                 {nextPeriod.month} {nextPeriod.year}
               </div>
               <div className="text-sm text-highlight-1">
-                Comienza: {nextPeriod.startDate.toLocaleDateString('es-ES')}
+                Starts: {nextPeriod.startDate.toLocaleDateString('en-US')}
               </div>
             </div>
           ) : (
             <div className="bg-gradient-to-r from-red-600/20 to-red-600/20 rounded-lg p-4 border border-red-500/30">
-              <div className="text-sm text-foundation-blue-60 mb-1">Estado</div>
+              <div className="text-sm text-foundation-blue-60 mb-1">Status</div>
               <div className="text-xl font-bold text-white">
-                Presale Finalizado
+                Presale Completed
               </div>
             </div>
           )}
@@ -271,9 +271,9 @@ Ve a la sección "Claims" para reclamar tus tokens cuando estén disponibles.
           <div className="bg-BG-FFF-8 rounded-lg p-4 border border-stroct-1">
             <div className="flex justify-between items-center">
               <div>
-                <div className="text-sm text-foundation-blue-60">Precio SOL</div>
+                <div className="text-sm text-foundation-blue-60">SOL Price</div>
                 <div className="text-lg font-semibold text-white">
-                  {priceLoading ? 'Cargando...' : formatSolPrice(solPriceUSD)}
+                  {priceLoading ? 'Loading...' : formatSolPrice(solPriceUSD)}
                 </div>
               </div>
               <div className="text-right">
@@ -282,7 +282,7 @@ Ve a la sección "Claims" para reclamar tus tokens cuando estén disponibles.
                 </div>
                 {priceError && (
                   <div className="text-xs text-highlight-1 mt-1">
-                    Precio de respaldo
+                    Fallback price
                   </div>
                 )}
               </div>
@@ -292,8 +292,8 @@ Ve a la sección "Claims" para reclamar tus tokens cuando estén disponibles.
           {/* Progress Bar */}
           <div>
             <div className="flex justify-between text-sm text-foundation-blue-60 mb-2">
-              <span>Progreso del Presale</span>
-              <span>Período {progress.currentPeriod} de {progress.totalPeriods}</span>
+              <span>Presale Progress</span>
+              <span>Period {progress.currentPeriod} of {progress.totalPeriods}</span>
             </div>
             <div className="w-full bg-BG-FFF-8 rounded-full h-3 border border-stroct-1">
               <div 
@@ -305,7 +305,7 @@ Ve a la sección "Claims" para reclamar tus tokens cuando estén disponibles.
               {presaleStats.isLoading ? (
                 <div className="animate-pulse bg-primary-1/20 h-4 rounded"></div>
               ) : (
-                `${progressPercentage.toFixed(1)}% del presale completado`
+                `${progressPercentage.toFixed(1)}% of presale completed`
               )}
             </div>
             <div className="text-center text-xs text-foundation-blue-50 mt-1">
@@ -320,13 +320,13 @@ Ve a la sección "Claims" para reclamar tus tokens cuando estén disponibles.
           {/* Stats Grid */}
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-BG-FFF-8 rounded-lg p-4 border border-stroct-1">
-              <div className="text-sm text-foundation-blue-60">Precio VIBES</div>
+              <div className="text-sm text-foundation-blue-60">VIBES Price</div>
               <div className="text-lg font-semibold text-white">
                 ${presaleData.tokenPriceUSD.toFixed(4)}
               </div>
             </div>
             <div className="bg-BG-FFF-8 rounded-lg p-4 border border-stroct-1">
-              <div className="text-sm text-foundation-blue-60">VIBES Vendidos</div>
+              <div className="text-sm text-foundation-blue-60">VIBES Sold</div>
               <div className="text-lg font-semibold text-white">
                 {presaleStats.isLoading ? (
                   <div className="animate-pulse bg-primary-1/20 h-6 rounded"></div>
@@ -336,7 +336,7 @@ Ve a la sección "Claims" para reclamar tus tokens cuando estén disponibles.
               </div>
             </div>
             <div className="bg-BG-FFF-8 rounded-lg p-4 border border-stroct-1">
-              <div className="text-sm text-foundation-blue-60">SOL Recaudado</div>
+              <div className="text-sm text-foundation-blue-60">SOL Raised</div>
               <div className="text-lg font-semibold text-white">
                 {presaleStats.isLoading ? (
                   <div className="animate-pulse bg-primary-1/20 h-6 rounded"></div>
@@ -346,7 +346,7 @@ Ve a la sección "Claims" para reclamar tus tokens cuando estén disponibles.
               </div>
             </div>
             <div className="bg-BG-FFF-8 rounded-lg p-4 border border-stroct-1">
-              <div className="text-sm text-foundation-blue-60">Participantes</div>
+              <div className="text-sm text-foundation-blue-60">Participants</div>
               <div className="text-lg font-semibold text-white">
                 {presaleStats.isLoading ? (
                   <div className="animate-pulse bg-primary-1/20 h-6 rounded"></div>
@@ -372,12 +372,12 @@ Ve a la sección "Claims" para reclamar tus tokens cuando estén disponibles.
           {/* Period End Timer */}
           {currentPeriod && (
             <div className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-lg p-4 border border-purple-500/30">
-              <div className="text-sm text-gray-400 mb-1">Período Termina</div>
+              <div className="text-sm text-gray-400 mb-1">Period Ends</div>
               <div className="text-xl font-bold text-white">
-                {currentPeriod.endDate.toLocaleDateString('es-ES')}
+                {currentPeriod.endDate.toLocaleDateString('en-US')}
               </div>
               <div className="text-sm text-purple-400 mt-1">
-                ¡El precio aumenta el próximo mes!
+                The price increases next month!
               </div>
             </div>
           )}
@@ -385,16 +385,16 @@ Ve a la sección "Claims" para reclamar tus tokens cuando estén disponibles.
 
         {/* Purchase Form */}
         <div className="space-y-6">
-          <h3 className="text-xl font-semibold text-white">Comprar VIBES Tokens</h3>
+          <h3 className="text-xl font-semibold text-white">Buy VIBES Tokens</h3>
           
           {!presaleData.isActive ? (
             <div className="bg-yellow-600/20 border border-yellow-500/30 rounded-lg p-4">
               <div className="text-yellow-400 font-medium">
-                Presale no está activo en este momento
+                Presale is not active at this time
               </div>
               {nextPeriod && (
                 <div className="text-sm text-gray-300 mt-2">
-                  Próximo período: {nextPeriod.month} {nextPeriod.year}
+                  Next period: {nextPeriod.month} {nextPeriod.year}
                 </div>
               )}
             </div>
@@ -403,7 +403,7 @@ Ve a la sección "Claims" para reclamar tus tokens cuando estén disponibles.
               {/* Payment Method Selection */}
               <div>
                 <label className="block text-sm font-medium text-gray-400 mb-2">
-                  Método de Pago
+                  Payment Method
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
@@ -433,7 +433,7 @@ Ve a la sección "Claims" para reclamar tus tokens cuando estén disponibles.
 
               {/* Formula Display */}
               <div className="bg-blue-600/20 border border-blue-500/30 rounded-lg p-3">
-                <div className="text-xs text-blue-400 mb-1">Fórmula de cálculo:</div>
+                <div className="text-xs text-blue-400 mb-1">Calculation formula:</div>
                 <div className="text-sm text-white font-mono">
                   {paymentMethod === 'SOL' 
                     ? `VIBES = SOL × ($${formatNumber(solPriceUSD)} / $${presaleData.tokenPriceUSD.toFixed(4)})`
@@ -446,7 +446,7 @@ Ve a la sección "Claims" para reclamar tus tokens cuando estén disponibles.
               {paymentMethod === 'SOL' && (
                 <div>
                   <label className="block text-sm font-medium text-gray-400 mb-2">
-                    Cantidad de SOL
+                    SOL Amount
                   </label>
                   <div className="relative">
                     <input
@@ -505,7 +505,7 @@ Ve a la sección "Claims" para reclamar tus tokens cuando estén disponibles.
               {/* Token Output */}
               <div>
                 <label className="block text-sm font-medium text-gray-400 mb-2">
-                  Recibirás
+                  You will receive
                 </label>
                 <div className="bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3">
                   <div className="text-white text-lg font-semibold">
@@ -517,7 +517,7 @@ Ve a la sección "Claims" para reclamar tus tokens cuando estén disponibles.
                   {(paymentMethod === 'SOL' ? solAmount : usdcAmount) && 
                    calculateVibesTokens(paymentMethod === 'SOL' ? solAmount : usdcAmount, paymentMethod) > 0 && (
                     <div className="text-xs text-gray-400 mt-1">
-                      Valor: ${(calculateVibesTokens(
+                      Value: ${(calculateVibesTokens(
                         paymentMethod === 'SOL' ? solAmount : usdcAmount, 
                         paymentMethod
                       ) * presaleData.tokenPriceUSD).toFixed(2)} USD
@@ -542,34 +542,34 @@ Ve a la sección "Claims" para reclamar tus tokens cuando estén disponibles.
                 {(isLoading || vestingLoading || smartContractLoading) ? (
                   <div className="flex items-center justify-center">
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                    {smartContractLoading ? 'Enviando a Blockchain...' : 
-                     vestingLoading ? 'Configurando vesting...' : 'Procesando...'}
+                    {smartContractLoading ? 'Sending to Blockchain...' : 
+                     vestingLoading ? 'Configuring vesting...' : 'Processing...'}
                   </div>
                 ) : !isConnected ? (
-                  'Conectar Wallet'
+                  'Connect Wallet'
                 ) : (paymentMethod === 'SOL' ? priceLoading : usdcPriceLoading) ? (
-                  'Cargando precios...'
+                  'Loading prices...'
                 ) : !presaleData.isActive ? (
-                  'Presale no activo'
+                  'Presale not active'
                 ) : isSmartContractMode ? (
-                  `🔗 Comprar con ${paymentMethod} (Smart Contract)`
+                  `🔗 Buy with ${paymentMethod} (Smart Contract)`
                 ) : (
-                  `🎮 Comprar VIBES con ${paymentMethod} (Simulación)`
+                  `🎮 Buy VIBES with ${paymentMethod} (Simulation)`
                 )}
               </button>
 
               {/* Disclaimer */}
               <div className="text-xs text-gray-500 text-center">
-                * Los tokens se distribuirán después de que termine el presale
+                * Tokens will be distributed after the presale ends
               </div>
               
               {/* Additional Info */}
               <div className="text-xs text-gray-500 text-center mt-2">
-                Precio actual: ${presaleData.tokenPriceUSD.toFixed(4)} USD por VIBES
+                Current price: ${presaleData.tokenPriceUSD.toFixed(4)} USD per VIBES
                 {currentPeriod && (
                   <>
                     <br />
-                    Válido hasta: {currentPeriod.endDate.toLocaleDateString('es-ES')}
+                    Valid until: {currentPeriod.endDate.toLocaleDateString('en-US')}
                   </>
                 )}
                 <br />

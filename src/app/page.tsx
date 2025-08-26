@@ -23,7 +23,7 @@ export default function Home() {
             VIBES Token Presale
           </h1>
           <p className="my-text-20 max-w-3xl mx-auto text-foundation-blue-20">
-            Participa en el presale de VIBES con precios dinámicos mensuales y gana recompensas a través del staking en Solana
+            Participate in the VIBES presale with dynamic monthly pricing and earn rewards through staking on Solana
           </p>
         </div>
 

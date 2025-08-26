@@ -9,7 +9,7 @@ interface BNPolyfillProviderProps {
 
 export default function BNPolyfillProvider({ children }: BNPolyfillProviderProps) {
   useEffect(() => {
-    // Inicializar todos los polyfills de Solana tan pronto como se monte el componente
+    // Initialize all Solana polyfills as soon as the component mounts
     initializeSolanaPolyfills()
   }, [])
 

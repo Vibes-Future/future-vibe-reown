@@ -8,17 +8,17 @@ export function PricingTable() {
   return (
     <div className="bg-BG-FFF-8 backdrop-blur-sm rounded-2xl p-8 border border-stroct-1 mt-8">
       <h3 className="my-text-32 gap-mb-24 text-center gradient-text-primary">
-        Cronograma de Precios VIBES
+        VIBES Pricing Schedule
       </h3>
       
       <div className="overflow-x-auto">
         <table className="w-full text-left">
           <thead>
             <tr className="border-b border-primary-6">
-              <th className="pb-4 text-foundation-blue-60 font-medium">Período</th>
-              <th className="pb-4 text-foundation-blue-60 font-medium text-right">Precio por VIBES</th>
-              <th className="pb-4 text-foundation-blue-60 font-medium text-right">Incremento</th>
-              <th className="pb-4 text-foundation-blue-60 font-medium text-center">Estado</th>
+              <th className="pb-4 text-foundation-blue-60 font-medium">Period</th>
+              <th className="pb-4 text-foundation-blue-60 font-medium text-right">Price per VIBES</th>
+              <th className="pb-4 text-foundation-blue-60 font-medium text-right">Increase</th>
+              <th className="pb-4 text-foundation-blue-60 font-medium text-center">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -52,10 +52,10 @@ export function PricingTable() {
                           {period.month} {period.year}
                         </div>
                         <div className="text-xs text-foundation-blue-50">
-                          {period.startDate.toLocaleDateString('es-ES', { 
+                          {period.startDate.toLocaleDateString('en-US', { 
                             day: 'numeric', 
                             month: 'short' 
-                          })} - {period.endDate.toLocaleDateString('es-ES', { 
+                          })} - {period.endDate.toLocaleDateString('en-US', { 
                             day: 'numeric', 
                             month: 'short' 
                           })}
@@ -86,17 +86,17 @@ export function PricingTable() {
                   <td className="py-4 text-center">
                     {isCurrentPeriod && (
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-1/20 text-primary-1 border border-primary-1/30">
-                        ● ACTIVO
+                        ● ACTIVE
                       </span>
                     )}
                     {isPastPeriod && (
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-foundation-blue-50/20 text-foundation-blue-50 border border-foundation-blue-50/30">
-                        Finalizado
+                        Completed
                       </span>
                     )}
                     {isFuturePeriod && (
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-highlight-1/20 text-highlight-1 border border-highlight-1/30">
-                        Próximo
+                        Upcoming
                       </span>
                     )}
                   </td>
@@ -113,29 +113,29 @@ export function PricingTable() {
           <div className="text-2xl font-bold text-white">
             {PRESALE_PRICING.length}
           </div>
-          <div className="text-sm text-gray-400">Períodos Total</div>
+          <div className="text-sm text-gray-400">Total Periods</div>
         </div>
         
         <div className="bg-gray-700/50 rounded-lg p-4 text-center">
           <div className="text-2xl font-bold text-green-400">
             ${PRESALE_PRICING[0].priceUSD.toFixed(4)}
           </div>
-          <div className="text-sm text-gray-400">Precio Inicial</div>
+          <div className="text-sm text-gray-400">Initial Price</div>
         </div>
         
         <div className="bg-gray-700/50 rounded-lg p-4 text-center">
           <div className="text-2xl font-bold text-red-400">
             ${PRESALE_PRICING[PRESALE_PRICING.length - 1].priceUSD.toFixed(4)}
           </div>
-          <div className="text-sm text-gray-400">Precio Final</div>
+          <div className="text-sm text-gray-400">Final Price</div>
         </div>
       </div>
 
       {/* Note */}
       <div className="mt-6 text-center text-sm text-gray-500">
         <p>
-          💡 <strong>Estrategia:</strong> Los precios aumentan cada mes. 
-          ¡Compra temprano para obtener mejores precios!
+          💡 <strong>Strategy:</strong> Prices increase every month. 
+          Buy early to get better prices!
         </p>
       </div>
     </div>
