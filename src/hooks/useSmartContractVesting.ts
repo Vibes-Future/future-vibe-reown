@@ -245,13 +245,25 @@ export const useSmartContractVesting = (): UseSmartContractVestingReturn => {
     try {
       console.log('💎 [SMART CONTRACT] Claiming tokens for period:', period)
       
+      // Validate period number
+      if (period < 1 || period > 4) {
+        throw new Error('Invalid period. Must be between 1 and 4.')
+      }
+      
       const connection = getConnection()
-    const result = await claimVestedTokens(walletProvider, connection, period)
+      const result = await claimVestedTokens(walletProvider, connection, period)
       
       if (result.success && result.signature) {
         setLastTransaction(result.signature)
-        console.log('✅ Claim successful:', result.signature)
-        console.log('🔍 Explorer:', result.explorerUrl)
+        console.log('✅ Claim successful:', {
+          period: period,
+          signature: result.signature,
+          amount: result.claimedAmount,
+          explorerUrl: result.explorerUrl
+        })
+        
+        // Show success message
+        alert(`🎉 Successfully claimed ${result.claimedAmount} VIBES tokens for period ${period}!`)
         
         // Refresh data after successful claim
         setTimeout(() => {
@@ -265,7 +277,9 @@ export const useSmartContractVesting = (): UseSmartContractVestingReturn => {
 
     } catch (err: any) {
       console.error('❌ Claim failed:', err)
-      setError(`Claim failed: ${err.message}`)
+      const errorMessage = `Claim failed: ${err.message}`
+      setError(errorMessage)
+      alert(`❌ ${errorMessage}`)
       throw err
     } finally {
       setIsLoading(false)

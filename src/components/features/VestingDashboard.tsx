@@ -7,6 +7,7 @@ import { useSmartContractVesting } from '@/hooks/useSmartContractVesting'
 import { formatTokens, formatNumber } from '@/utils/formatters'
 import { VestingCalculator } from '@/types/vesting'
 import { TransactionInfo, SmartContractStatus } from './TransactionInfo'
+import { ClaimDebug } from './ClaimDebug'
 
 export function VestingDashboard() {
   const { isConnected, address } = useAppKitAccount()
@@ -124,6 +125,9 @@ export function VestingDashboard() {
 
   return (
     <div className="bg-BG-FFF-8 backdrop-blur-sm rounded-2xl p-8 border border-stroct-1">
+      {/* Debug Panel - Remove in production */}
+      <ClaimDebug />
+      
       <div className="flex justify-between items-center mb-6">
         <h3 className="my-text-24 gradient-text-primary">Vesting & Claims</h3>
         <button
@@ -251,7 +255,7 @@ export function VestingDashboard() {
                           </button>
                         ) : (
                           <div className="text-xs text-gray-500">
-                            🔒 Locked
+                            🔒 Locked until {period.claimDate.toLocaleDateString('en-US')}
                           </div>
                         )}
                       </div>

@@ -133,6 +133,8 @@ export const useVesting = (): UseVestingReturn => {
     setError(null)
 
     try {
+      console.log('🎯 Starting claim process for purchase:', purchaseId, 'period:', period)
+      
       const purchase = purchases.find(p => p.id === purchaseId)
       if (!purchase) {
         throw new Error('Purchase not found')
@@ -141,8 +143,17 @@ export const useVesting = (): UseVestingReturn => {
       const claimable = VestingCalculator.calculateClaimableTokens(purchase.vestingSchedule)
       const periodData = claimable.periodsAvailable.find(p => p.period === period)
       
-      if (!periodData || !periodData.isAvailable) {
-        throw new Error('Tokens not available for claim yet')
+      console.log('📊 Claimable data:', claimable)
+      console.log('📅 Period data:', periodData)
+      
+      if (!periodData) {
+        throw new Error(`Period ${period} not found in vesting schedule`)
+      }
+      
+      if (!periodData.isAvailable) {
+        const now = new Date()
+        const claimDate = periodData.claimDate
+        throw new Error(`Tokens not available for claim yet. Available from: ${claimDate.toLocaleDateString('en-US')}`)
       }
 
       // In production, this would call the smart contract claim function
@@ -151,7 +162,8 @@ export const useVesting = (): UseVestingReturn => {
         purchaseId,
         period,
         amount: periodData.amount,
-        percentage: periodData.percentage
+        percentage: periodData.percentage,
+        totalTokens: purchase.tokensPurchased
       })
 
       // Simulate transaction signature
@@ -170,10 +182,21 @@ export const useVesting = (): UseVestingReturn => {
       setPurchases(updatedPurchases)
       savePurchases(updatedPurchases)
 
-      console.log('✅ Tokens claimed successfully:', claimSignature)
-    } catch (err) {
-      console.error('Claim failed:', err)
-      setError('Claim failed. Please try again.')
+      console.log('✅ Tokens claimed successfully:', {
+        signature: claimSignature,
+        amount: periodData.amount,
+        period: period,
+        purchaseId: purchaseId
+      })
+      
+      // Show success message
+      alert(`🎉 Successfully claimed ${periodData.amount.toFixed(2)} VIBES tokens for period ${period}!`)
+      
+    } catch (err: any) {
+      console.error('❌ Claim failed:', err)
+      const errorMessage = err.message || 'Claim failed. Please try again.'
+      setError(errorMessage)
+      alert(`❌ Claim failed: ${errorMessage}`)
       throw err
     } finally {
       setIsLoading(false)

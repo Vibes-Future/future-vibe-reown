@@ -303,15 +303,37 @@ export const claimVestedTokens = async (
       throw new Error('Smart contracts not deployed yet')
     }
 
-    // Por ahora, simular las transacciones de reclamo
-    console.log('🔄 Claim transactions not yet implemented with direct transactions, using simulation...')
-    const simulatedSignature = 'simulated_claim_' + Math.random().toString(36).substr(2, 9)
+    // Calculate the actual amount to claim based on period
+    const periodAmounts = [40, 20, 20, 20] // 40% first, 20% each month
+    const periodIndex = scheduleIndex - 1 // Convert to 0-indexed
+    
+    if (periodIndex < 0 || periodIndex >= periodAmounts.length) {
+      throw new Error('Invalid period index')
+    }
+
+    // For now, simulate the claim transaction
+    // In production, this would call the actual smart contract
+    console.log('🔄 Simulating claim transaction for period', scheduleIndex, 'with', periodAmounts[periodIndex], '%')
+    
+    // Simulate blockchain transaction
+    const simulatedSignature = 'simulated_claim_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+    
+    // Calculate claimed amount (assuming 1000 tokens purchased as example)
+    const baseTokens = 1000 // This should come from actual user purchase data
+    const claimedAmount = (baseTokens * periodAmounts[periodIndex]) / 100
+    
+    console.log('✅ Claim simulation successful:', {
+      period: scheduleIndex,
+      percentage: periodAmounts[periodIndex],
+      amount: claimedAmount,
+      signature: simulatedSignature
+    })
     
     return {
       success: true,
       signature: simulatedSignature,
       explorerUrl: getExplorerUrl(simulatedSignature),
-      claimedAmount: 250,
+      claimedAmount: claimedAmount,
       period: scheduleIndex
     }
   } catch (error: any) {
