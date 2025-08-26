@@ -1,12 +1,14 @@
 'use client'
 
 import React, { useState } from 'react'
+import { useAppKitAccount } from '@reown/appkit/react'
 import { useVesting } from '@/hooks/useVesting'
 import { useSmartContractVesting } from '@/hooks/useSmartContractVesting'
 
 export function ClaimDebug() {
   const [testPeriod, setTestPeriod] = useState(1)
   const [testAmount, setTestAmount] = useState(1000)
+  const { address } = useAppKitAccount()
   
   const {
     purchases,
