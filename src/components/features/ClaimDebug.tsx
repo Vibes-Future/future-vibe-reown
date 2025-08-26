@@ -155,6 +155,15 @@ export function ClaimDebug() {
             {smartError && <div className="text-red-400">Error: {smartError}</div>}
           </div>
         </div>
+        
+        <div>
+          <h5 className="font-medium text-yellow-300 mb-2">Data Sync Status:</h5>
+          <div className="space-y-1 text-gray-300">
+            <div>Recent Purchases: {localStorage.getItem('vibes_recent_purchases') ? '✅ Found' : '❌ None'}</div>
+            <div>Legacy Purchases: {localStorage.getItem('vibes_user_purchases') ? '✅ Found' : '❌ None'}</div>
+            <div>Wallet Address: {address ? address.slice(0, 8) + '...' : '❌ Not Connected'}</div>
+          </div>
+        </div>
       </div>
 
       <div className="mt-4 flex gap-2">
@@ -171,6 +180,16 @@ export function ClaimDebug() {
           className="bg-gray-600 hover:bg-gray-700 disabled:bg-gray-800 text-white text-xs py-1 px-2 rounded"
         >
           🔄 Refresh Smart
+        </button>
+        <button
+          onClick={() => {
+            // Force sync by clearing cache and refreshing
+            localStorage.removeItem('vibes_recent_purchases')
+            window.location.reload()
+          }}
+          className="bg-orange-600 hover:bg-orange-700 text-white text-xs py-1 px-2 rounded"
+        >
+          🔄 Force Sync
         </button>
       </div>
     </div>

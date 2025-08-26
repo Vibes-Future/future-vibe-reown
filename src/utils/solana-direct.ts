@@ -221,11 +221,38 @@ export const purchaseTokensWithSOL = async (
     console.log('⚠️ Smart contract integration pendiente - usando simulación temporal...')
     const simulatedSignature = 'devnet_sim_' + Math.random().toString(36).substr(2, 9)
     
+    // Calculate tokens based on SOL amount (1 SOL = 1000 VIBES)
+    const vibesAmount = solAmount * 1000
+    
+    // Save purchase data to localStorage for vesting system
+    if (typeof window !== 'undefined') {
+      try {
+        const userAddress = wallet.publicKey.toString()
+        const purchaseData = {
+          totalTokensPurchased: vibesAmount,
+          totalSolSpent: solAmount,
+          totalUsdcSpent: 0,
+          purchaseCount: 1,
+          purchaseDate: new Date().toISOString(),
+          transactionSignature: simulatedSignature
+        }
+        
+        // Save to recent purchases for immediate access
+        const recentPurchases = JSON.parse(localStorage.getItem('vibes_recent_purchases') || '{}')
+        recentPurchases[userAddress] = purchaseData
+        localStorage.setItem('vibes_recent_purchases', JSON.stringify(recentPurchases))
+        
+        console.log('💾 Purchase data saved to localStorage:', purchaseData)
+      } catch (error) {
+        console.warn('Failed to save purchase data:', error)
+      }
+    }
+    
     return {
       success: true,
       signature: simulatedSignature,
       explorerUrl: `https://solscan.io/tx/${simulatedSignature}?cluster=devnet`,
-      vibesAmount: solAmount * 1000,
+      vibesAmount: vibesAmount,
     }
   } catch (error: any) {
     console.error('❌ Error purchasing tokens with SOL (direct):', error)
@@ -396,6 +423,37 @@ export const getUserPurchaseData = async (connection: Connection, userPublicKey:
             }
           }
         }
+      }
+    }
+    
+    // Check if there are recent purchases that need to be synced
+    console.log('🔍 Checking for recent purchases to sync...')
+    const recentPurchases = localStorage.getItem('vibes_recent_purchases')
+    if (recentPurchases) {
+      try {
+        const purchases = JSON.parse(recentPurchases)
+        const userAddress = userPublicKey.toString()
+        const userPurchase = purchases[userAddress]
+        
+        if (userPurchase) {
+          console.log('✅ Found recent purchase data to sync:', userPurchase)
+          // Convert to the format expected by the vesting system
+          return {
+            user: userPublicKey,
+            totalTokensPurchased: userPurchase.totalTokensPurchased || 0,
+            totalSolSpent: userPurchase.totalSolSpent || 0,
+            totalUsdcSpent: userPurchase.totalUsdcSpent || 0,
+            purchaseCount: userPurchase.purchaseCount || 1,
+            vestingSchedule: {
+              totalTokens: userPurchase.totalTokensPurchased || 0,
+              listingTimestamp: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60), // 30 days from now
+              claimedAmounts: [0, 0, 0, 0],
+              claimedFlags: [false, false, false, false]
+            }
+          }
+        }
+      } catch (parseError) {
+        console.warn('Failed to parse recent purchases:', parseError)
       }
     }
     
