@@ -7,7 +7,8 @@ import { StakingSection } from '@/components/StakingSection'
 import { VestingDashboard } from '@/components/VestingDashboard'
 import { PricingTable } from '@/components/PricingTable'
 import DevnetTestingConfig from '@/components/DevnetTestingConfig'
-import { Footer } from '@/components/Footer'
+import { EnvironmentDebug } from '@/components/EnvironmentDebug'
+
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'presale' | 'claims' | 'staking'>('presale')
@@ -18,45 +19,45 @@ export default function Home() {
       <Navbar />
       
       {/* Hero Section */}
-      <section className="flex-1 container mx-auto px-4 py-12">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent mb-6">
+      <section className="flex-1 section-py">
+        <div className="container text-center gap-mb-32">
+          <h1 className="banner-title gradient-text-primary">
             VIBES Token Presale
           </h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+          <p className="my-text-20 max-w-3xl mx-auto text-foundation-blue-20">
             Participa en el presale de VIBES con precios dinámicos mensuales y gana recompensas a través del staking en Solana
           </p>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex justify-center mb-8">
-          <div className="bg-gray-800 rounded-lg p-1 inline-flex">
+        <div className="flex justify-center gap-mb-32">
+          <div className="bg-BG-FFF-8 rounded-lg p-1 inline-flex border border-stroct-1">
             <button
               onClick={() => setActiveTab('presale')}
-              className={`px-6 py-3 rounded-md font-medium transition-all ${
+              className={`px-6 py-3 rounded-md font-medium my-transition ${
                 activeTab === 'presale'
-                  ? 'bg-purple-600 text-white shadow-lg'
-                  : 'text-gray-400 hover:text-white'
+                  ? 'bg-primary-1 text-primary-4 shadow-lg'
+                  : 'text-foundation-blue-60 hover:text-primary-1'
               }`}
             >
               Presale
             </button>
             <button
               onClick={() => setActiveTab('claims')}
-              className={`px-6 py-3 rounded-md font-medium transition-all ${
+              className={`px-6 py-3 rounded-md font-medium my-transition ${
                 activeTab === 'claims'
-                  ? 'bg-green-600 text-white shadow-lg'
-                  : 'text-gray-400 hover:text-white'
+                  ? 'bg-primary-1 text-primary-4 shadow-lg'
+                  : 'text-foundation-blue-20 hover:text-primary-1'
               }`}
             >
               Claims
             </button>
             <button
               onClick={() => setActiveTab('staking')}
-              className={`px-6 py-3 rounded-md font-medium transition-all ${
+              className={`px-6 py-3 rounded-md font-medium my-transition ${
                 activeTab === 'staking'
-                  ? 'bg-blue-600 text-white shadow-lg'
-                  : 'text-gray-400 hover:text-white'
+                  ? 'bg-primary-1 text-primary-4 shadow-lg'
+                  : 'text-foundation-blue-60 hover:text-primary-1'
               }`}
             >
               Staking
@@ -79,11 +80,13 @@ export default function Home() {
         )}
       </section>
 
-      {/* Footer */}
-      <Footer />
+
       
-      {/* Development Testing Config */}
-      <DevnetTestingConfig />
-    </div>
-  )
-}
+              {/* Development Testing Config */}
+        <DevnetTestingConfig />
+        
+        {/* Environment Debug (Development Only) */}
+        <EnvironmentDebug />
+      </div>
+    )
+  }

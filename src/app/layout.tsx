@@ -1,26 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ContextProvider } from "@/providers/ContextProvider";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { lexend, poppins, roboto } from "@/config/font";
 
 export const metadata: Metadata = {
-  title: "VIBES Token Presale - Solana DeFi",
-  description: "Participa en el presale de VIBES con precios dinámicos mensuales. Compra con SOL y gana recompensas a través del staking en Solana blockchain.",
-  keywords: ["VIBES", "Solana", "Presale", "Staking", "DeFi", "Crypto", "Web3", "Token", "Blockchain"],
-  authors: [{ name: "VIBES Team" }],
+  title: 'Future Vibe ($VIBES) - Unique token that supports charitable causes and fulfills social responsibility',
+  description: 'FutureVibes is the first project of its kind. As a pioneer, it combines conventional charities with digitalization and new digital technologies to enable maximum support for people with restricted mobility. It is the first and unique meme coin with a social usability.',
+  keywords: ["VIBES", "Solana", "Presale", "Staking", "DeFi", "Crypto", "Web3", "Token", "Blockchain", "Charity", "Social Responsibility"],
+  authors: [{ name: "Future Vibe Team" }],
   openGraph: {
-    title: "VIBES Token Presale - Solana DeFi",
-    description: "Participa en el presale de VIBES con precios dinámicos mensuales. Compra con SOL y gana recompensas a través del staking.",
+    title: 'Future Vibe ($VIBES) - Unique token that supports charitable causes',
+    description: 'FutureVibes combines conventional charities with digitalization and new digital technologies.',
     type: "website",
   },
 };
@@ -33,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-900 text-white`}
+        className={`${lexend?.variable} ${roboto?.variable} ${poppins?.variable} antialiased bg-primary-4 text-foundation-blue-20`}
       >
         <ContextProvider>
           {children}

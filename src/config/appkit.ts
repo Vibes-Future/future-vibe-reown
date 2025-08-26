@@ -2,16 +2,17 @@
 import { createAppKit } from '@reown/appkit/react'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 import { solana, solanaTestnet, solanaDevnet } from '@reown/appkit/networks'
+import { env } from './environment'
 
 // Get project ID from environment variables
-const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
+const projectId = env.projectId
 
 if (!projectId) {
   throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
 }
 
-// Custom RPC URL from Helius or other provider
-const customRpcUrl = process.env.NEXT_PUBLIC_SOLANA_RPC_URL || 'https://api.devnet.solana.com'
+// Custom RPC URL from environment configuration
+const customRpcUrl = env.rpcUrl
 
 // Configure Solana adapter with custom RPC
 const solanaAdapter = new SolanaAdapter({
@@ -40,6 +41,11 @@ export const appKit = createAppKit({
     analytics: true, // Optional - turn on/off analytics
     email: false, // Optional - turn on/off email login
     socials: [] // Optional - add social logins
+  },
+  themeMode: 'dark',
+  themeVariables: {
+    '--w3m-font-family': 'system-ui, -apple-system, sans-serif', // Usar fuentes del sistema
+    '--w3m-font-size-master': '10px',
   }
 })
 

@@ -130,11 +130,11 @@ export function StakingSection() {
   }
 
   return (
-    <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700">
+    <div className="bg-BG-FFF-8 backdrop-blur-sm rounded-2xl p-8 border border-stroct-1">
       <div className="grid md:grid-cols-2 gap-8">
         {/* Staking Statistics */}
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-white mb-6">Token Staking</h2>
+          <h2 className="my-text-32 gap-mb-24 gradient-text-primary">Token Staking</h2>
           
           {/* Stats Grid */}
           <div className="grid grid-cols-2 gap-4">

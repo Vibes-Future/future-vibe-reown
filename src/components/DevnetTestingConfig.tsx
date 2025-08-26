@@ -33,7 +33,7 @@ export default function DevnetTestingConfig() {
       <div className="fixed bottom-4 right-4 z-50">
         <button 
           onClick={() => setIsExpanded(true)}
-          className="bg-gray-800 text-white p-2 rounded-full shadow-lg hover:bg-gray-700"
+          className="bg-primary-8 text-white p-2 rounded-full shadow-lg hover:bg-primary-7 my-transition"
         >
           🧪
         </button>
@@ -42,12 +42,12 @@ export default function DevnetTestingConfig() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 bg-gray-800 text-white p-4 rounded-lg shadow-lg w-80">
+    <div className="fixed bottom-4 right-4 z-50 bg-primary-8 text-white p-4 rounded-lg shadow-lg w-80 border border-stroct-1">
       <div className="flex justify-between items-center mb-4">
         <h3 className="font-bold">🧪 Configuración de Testing</h3>
         <button 
           onClick={() => setIsExpanded(false)}
-          className="text-gray-400 hover:text-white"
+          className="text-foundation-blue-60 hover:text-white my-transition"
         >
           ✕
         </button>
@@ -55,34 +55,34 @@ export default function DevnetTestingConfig() {
       
       <div className="space-y-4">
         <div>
-          <p className="text-xs text-gray-400 mb-1">Simulación de Listing</p>
+          <p className="text-xs text-foundation-blue-60 mb-1">Simulación de Listing</p>
           <button 
             onClick={handleSimulateListing}
-            className="bg-blue-600 hover:bg-blue-700 text-white text-sm py-1 px-3 rounded w-full"
+            className="bg-primary-1 hover:bg-primary-4 hover:text-primary-1 text-primary-4 text-sm py-1 px-3 rounded w-full my-transition"
           >
             Simular Listing (1 min atrás)
           </button>
         </div>
         
         <div>
-          <p className="text-xs text-gray-400 mb-1">Datos de Simulación</p>
+          <p className="text-xs text-foundation-blue-60 mb-1">Datos de Simulación</p>
           <button 
             onClick={handleClearData}
-            className="bg-red-600 hover:bg-red-700 text-white text-sm py-1 px-3 rounded w-full"
+            className="bg-red-600 hover:bg-red-700 text-white text-sm py-1 px-3 rounded w-full my-transition"
           >
             Borrar Datos Simulados
           </button>
         </div>
         
-        <div className="pt-2 border-t border-gray-700">
-          <p className="text-xs text-gray-400">Modo Simulación</p>
+        <div className="pt-2 border-t border-primary-6">
+          <p className="text-xs text-foundation-blue-60">Modo Simulación</p>
           <div className="flex items-center mt-1">
             <div className="flex-1">
               <div className="flex items-center">
-                <span className="inline-block w-3 h-3 bg-green-500 rounded-full mr-2"></span>
+                <span className="inline-block w-3 h-3 bg-primary-1 rounded-full mr-2"></span>
                 <span className="text-sm">Activo</span>
               </div>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-foundation-blue-50 mt-1">
                 Los datos se almacenan localmente
               </p>
             </div>
@@ -90,7 +90,7 @@ export default function DevnetTestingConfig() {
         </div>
       </div>
       
-      <div className="mt-4 pt-2 border-t border-gray-700 text-xs text-gray-500">
+      <div className="mt-4 pt-2 border-t border-primary-6 text-xs text-foundation-blue-50">
         <p>Esta es una simulación para testing. Las transacciones no se envían a la blockchain real.</p>
       </div>
     </div>

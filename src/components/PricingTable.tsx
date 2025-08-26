@@ -6,19 +6,19 @@ export function PricingTable() {
   const currentPeriod = getCurrentPresalePeriod()
 
   return (
-    <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 mt-8">
-      <h3 className="text-2xl font-bold text-white mb-6 text-center">
+    <div className="bg-BG-FFF-8 backdrop-blur-sm rounded-2xl p-8 border border-stroct-1 mt-8">
+      <h3 className="my-text-32 gap-mb-24 text-center gradient-text-primary">
         Cronograma de Precios VIBES
       </h3>
       
       <div className="overflow-x-auto">
         <table className="w-full text-left">
           <thead>
-            <tr className="border-b border-gray-600">
-              <th className="pb-4 text-gray-400 font-medium">Período</th>
-              <th className="pb-4 text-gray-400 font-medium text-right">Precio por VIBES</th>
-              <th className="pb-4 text-gray-400 font-medium text-right">Incremento</th>
-              <th className="pb-4 text-gray-400 font-medium text-center">Estado</th>
+            <tr className="border-b border-primary-6">
+              <th className="pb-4 text-foundation-blue-60 font-medium">Período</th>
+              <th className="pb-4 text-foundation-blue-60 font-medium text-right">Precio por VIBES</th>
+              <th className="pb-4 text-foundation-blue-60 font-medium text-right">Incremento</th>
+              <th className="pb-4 text-foundation-blue-60 font-medium text-center">Estado</th>
             </tr>
           </thead>
           <tbody>
@@ -34,11 +34,11 @@ export function PricingTable() {
               return (
                 <tr 
                   key={`${period.month}-${period.year}`}
-                  className={`border-b border-gray-700/50 ${
+                  className={`border-b border-primary-6/50 ${
                     isCurrentPeriod 
-                      ? 'bg-green-500/10 border-green-500/30' 
+                      ? 'bg-primary-1/10 border-primary-1/30' 
                       : isPastPeriod 
-                        ? 'bg-gray-600/20 text-gray-500' 
+                        ? 'bg-BG-FFF-8 text-foundation-blue-50' 
                         : ''
                   }`}
                 >
@@ -46,12 +46,12 @@ export function PricingTable() {
                     <div className="flex items-center">
                       <div>
                         <div className={`font-medium ${
-                          isCurrentPeriod ? 'text-green-400' : 
-                          isPastPeriod ? 'text-gray-500' : 'text-white'
+                          isCurrentPeriod ? 'text-primary-1' : 
+                          isPastPeriod ? 'text-foundation-blue-50' : 'text-white'
                         }`}>
                           {period.month} {period.year}
                         </div>
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-foundation-blue-50">
                           {period.startDate.toLocaleDateString('es-ES', { 
                             day: 'numeric', 
                             month: 'short' 
@@ -66,8 +66,8 @@ export function PricingTable() {
                   
                   <td className="py-4 text-right">
                     <div className={`text-lg font-semibold ${
-                      isCurrentPeriod ? 'text-green-400' : 
-                      isPastPeriod ? 'text-gray-500' : 'text-white'
+                      isCurrentPeriod ? 'text-primary-1' : 
+                      isPastPeriod ? 'text-foundation-blue-50' : 'text-white'
                     }`}>
                       ${period.priceUSD.toFixed(4)}
                     </div>
@@ -76,7 +76,7 @@ export function PricingTable() {
                   <td className="py-4 text-right">
                     {index > 0 && (
                       <div className={`text-sm ${
-                        isPastPeriod ? 'text-gray-500' : 'text-orange-400'
+                        isPastPeriod ? 'text-foundation-blue-50' : 'text-highlight-1'
                       }`}>
                         +{increment.toFixed(1)}%
                       </div>
@@ -85,17 +85,17 @@ export function PricingTable() {
                   
                   <td className="py-4 text-center">
                     {isCurrentPeriod && (
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/20 text-green-400 border border-green-500/30">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-1/20 text-primary-1 border border-primary-1/30">
                         ● ACTIVO
                       </span>
                     )}
                     {isPastPeriod && (
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-500/20 text-gray-500 border border-gray-500/30">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-foundation-blue-50/20 text-foundation-blue-50 border border-foundation-blue-50/30">
                         Finalizado
                       </span>
                     )}
                     {isFuturePeriod && (
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500/20 text-blue-400 border border-blue-500/30">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-highlight-1/20 text-highlight-1 border border-highlight-1/30">
                         Próximo
                       </span>
                     )}

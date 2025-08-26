@@ -5,7 +5,7 @@ import { Navbar } from '@/components/Navbar'
 import { PresaleSection } from '@/components/PresaleSection'
 import { StakingSection } from '@/components/StakingSection'
 import { PricingTable } from '@/components/PricingTable'
-import { Footer } from '@/components/Footer'
+
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'presale' | 'staking'>('presale')
@@ -65,8 +65,7 @@ export default function Home() {
         )}
       </section>
 
-      {/* Footer */}
-      <Footer />
+
     </div>
   )
 }

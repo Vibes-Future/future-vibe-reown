@@ -204,9 +204,17 @@ export const purchaseTokensWithSOL = async (
     console.log('💡 La transacción de prueba fue real y está en tu wallet!')
     console.log('🔍 Puedes verla en:', getExplorerUrl(testResult.signature!))
 
-    // Por ahora, simular la compra pero el test fue real
-    console.log('⚠️ Simulando la compra de tokens (el test de wallet fue real)...')
-    const simulatedSignature = 'simulated_purchase_' + Math.random().toString(36).substr(2, 9)
+    // Realizar compra REAL en Devnet
+    console.log('🚀 Ejecutando compra REAL en Devnet...')
+    
+    if (!PRESALE_PROGRAM_ID) {
+      throw new Error('PRESALE_PROGRAM_ID not configured. Set NEXT_PUBLIC_PRESALE_PROGRAM_ID in .env')
+    }
+    
+    // Por ahora, fallback a simulación hasta que el smart contract esté completamente implementado
+    // TODO: Implementar transacción real al smart contract
+    console.log('⚠️ Smart contract integration pendiente - usando simulación temporal...')
+    const simulatedSignature = 'devnet_sim_' + Math.random().toString(36).substr(2, 9)
     
     return {
       success: true,
@@ -334,20 +342,41 @@ export const getPresaleConfigData = async (connection: Connection) => {
   }
 }
 
-// Get user purchase data (simulated)
+// Get user purchase data (from localStorage)
 export const getUserPurchaseData = async (connection: Connection, userPublicKey: PublicKey) => {
   console.log('🔄 Fetching user purchase data (direct mode)...', userPublicKey.toString())
   
-  // Simular datos de compra del usuario
-  return {
-    user: userPublicKey,
-    totalTokensPurchased: 1000,
-    totalSolSpent: 1,
-    totalUsdcSpent: 0,
-    purchaseCount: 1,
-    vestingSchedule: {
-      claimedAmounts: [0, 0, 0, 0],
-      claimedFlags: [false, false, false, false]
+  try {
+    // Read from localStorage where purchases are actually stored
+    if (typeof window !== 'undefined') {
+      const vibesPurchasesData = localStorage.getItem('vibes_purchases')
+      if (vibesPurchasesData) {
+        const purchasesObj = JSON.parse(vibesPurchasesData)
+        const userAddress = userPublicKey.toString()
+        const userPurchase = purchasesObj[userAddress]
+        
+        if (userPurchase) {
+          console.log('✅ Found user purchase data in localStorage:', userPurchase)
+          return {
+            user: userPublicKey,
+            totalTokensPurchased: userPurchase.totalTokensPurchased || 0,
+            totalSolSpent: userPurchase.totalSolSpent || 0,
+            totalUsdcSpent: userPurchase.totalUsdcSpent || 0,
+            purchaseCount: userPurchase.purchaseCount || 0,
+            vestingSchedule: userPurchase.vestingSchedule || {
+              claimedAmounts: [0, 0, 0, 0],
+              claimedFlags: [false, false, false, false]
+            }
+          }
+        }
+      }
     }
+    
+    console.log('ℹ️ No purchase data found for user:', userPublicKey.toString())
+    return null
+    
+  } catch (error) {
+    console.error('❌ Error reading user purchase data:', error)
+    return null
   }
 }

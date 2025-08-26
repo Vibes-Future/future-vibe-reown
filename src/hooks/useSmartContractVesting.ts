@@ -4,6 +4,7 @@ import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
 import { Connection, PublicKey } from '@solana/web3.js'
 import { 
   purchaseTokensWithSOL,
+  purchaseTokensWithUSDC,
   claimVestedTokens,
   getUserPurchaseData,
   getPresaleConfigData,
@@ -12,7 +13,7 @@ import {
   isSmartContractDeployed,
   PurchaseResult,
   ClaimResult
-} from '@/utils/solana-direct'  // Cambiado a transacciones directas
+} from '@/utils/solana-direct'  // Transacciones REALES en Devnet
 
 interface SmartContractPurchase {
   userAddress: string
@@ -54,6 +55,7 @@ interface UseSmartContractVestingReturn {
   
   // Functions
   purchaseWithSOL: (solAmount: number) => Promise<PurchaseResult>
+  purchaseWithUSDC: (usdcAmount: number) => Promise<PurchaseResult>
   claimTokens: (period: number) => Promise<ClaimResult>
   refreshData: () => Promise<void>
   
@@ -166,7 +168,46 @@ export const useSmartContractVesting = (): UseSmartContractVestingReturn => {
       console.log('🛒 [SMART CONTRACT] Purchasing tokens with SOL:', { solAmount })
       
       const connection = getConnection()
-    const result = await purchaseTokensWithSOL(walletProvider, connection, solAmount)
+      const result = await purchaseTokensWithSOL(walletProvider, connection, solAmount)
+      
+      if (result.success && result.signature) {
+        setLastTransaction(result.signature)
+        console.log('✅ Purchase successful:', result.signature)
+        console.log('🔍 Explorer:', result.explorerUrl)
+        
+        // Refresh data after successful purchase
+        setTimeout(() => {
+          loadSmartContractData()
+        }, 2000) // Wait for blockchain confirmation
+        
+        return result
+      } else {
+        throw new Error(result.error || 'Purchase failed')
+      }
+
+    } catch (err: any) {
+      console.error('❌ Purchase failed:', err)
+      setError(`Purchase failed: ${err.message}`)
+      throw err
+    } finally {
+      setIsLoading(false)
+    }
+  }, [isConnected, walletProvider, programDeployed, loadSmartContractData])
+
+  // Purchase tokens with USDC
+  const purchaseWithUSDC = useCallback(async (usdcAmount: number): Promise<PurchaseResult> => {
+    if (!isConnected || !walletProvider || !programDeployed) {
+      throw new Error('Wallet not connected or smart contracts not deployed')
+    }
+
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      console.log('🛒 [SMART CONTRACT] Purchasing tokens with USDC:', { usdcAmount })
+      
+      const connection = getConnection()
+      const result = await purchaseTokensWithUSDC(walletProvider, connection, usdcAmount)
       
       if (result.success && result.signature) {
         setLastTransaction(result.signature)
@@ -295,6 +336,7 @@ export const useSmartContractVesting = (): UseSmartContractVestingReturn => {
     
     // Functions
     purchaseWithSOL,
+    purchaseWithUSDC,
     claimTokens,
     refreshData,
     

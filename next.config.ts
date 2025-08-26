@@ -1,6 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Proxy para solucionar CORS de fuentes externas
+  async rewrites() {
+    return [
+      {
+        source: '/fonts/:path*',
+        destination: 'https://fonts.reown.com/:path*',
+      },
+    ]
+  },
   webpack: (config, { isServer }) => {
     if (!isServer) {
       // Polyfills para el navegador

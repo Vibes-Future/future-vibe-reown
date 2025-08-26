@@ -8,6 +8,7 @@
  */
 
 import { Connection, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js'
+import { calculateVibesFromSOL, getCurrentPresalePeriod } from '@/config/pricing'
 import { getAssociatedTokenAddress } from '@solana/spl-token'
 
 // Program ID - from environment variables
@@ -69,7 +70,10 @@ const createMockUserPurchase = (userAddress: string, purchaseAmount: number = 0)
 // Store mock data in localStorage to persist between page reloads
 const saveToLocalStorage = (key: string, value: any) => {
   try {
-    localStorage.setItem(key, JSON.stringify(value))
+    // Check if we're in the browser (client-side)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(key, JSON.stringify(value))
+    }
   } catch (e) {
     console.error('Failed to save to localStorage:', e)
   }
@@ -77,17 +81,28 @@ const saveToLocalStorage = (key: string, value: any) => {
 
 const getFromLocalStorage = (key: string, defaultValue: any = null) => {
   try {
-    const value = localStorage.getItem(key)
-    return value ? JSON.parse(value) : defaultValue
+    // Check if we're in the browser (client-side)
+    if (typeof window !== 'undefined') {
+      const value = localStorage.getItem(key)
+      return value ? JSON.parse(value) : defaultValue
+    }
+    return defaultValue
   } catch (e) {
     console.error('Failed to get from localStorage:', e)
     return defaultValue
   }
 }
 
-// Initialize mock storage from localStorage
-const mockStorage = {
-  purchases: new Map(Object.entries(getFromLocalStorage('vibes_purchases', {})))
+// Initialize mock storage from localStorage (lazy initialization)
+let mockStorage: { purchases: Map<string, any> } | null = null
+
+const getMockStorage = () => {
+  if (!mockStorage) {
+    mockStorage = {
+      purchases: new Map(Object.entries(getFromLocalStorage('vibes_purchases', {})))
+    }
+  }
+  return mockStorage
 }
 
 // Get presale configuration PDA
@@ -138,25 +153,28 @@ export const purchaseTokensWithSOL = async (
     // Generate mock transaction signature
     const signature = `sim${Date.now().toString(36)}${Math.random().toString(36).substring(2, 10)}`
     
-    // Calculate VIBES amount based on SOL amount and rate
-    const vibesAmount = solAmount * mockPresaleConfig.solToVibesRate
+    // Calculate VIBES amount using the real pricing formula
+    const currentPeriod = getCurrentPresalePeriod()
+    const solPriceUSD = 150 // Simulated SOL price in USD (in production, this would come from an oracle)
+    const vibesAmount = calculateVibesFromSOL(solAmount, solPriceUSD, currentPeriod.priceUSD)
     
     // Store purchase in mock storage
     const userAddress = wallet.publicKey.toString()
-    const existingPurchase = mockStorage.purchases.get(userAddress)
+    const storage = getMockStorage()
+    const existingPurchase = storage.purchases.get(userAddress)
     
     if (existingPurchase) {
       existingPurchase.totalTokensPurchased += vibesAmount
       existingPurchase.totalSolSpent += solAmount
       existingPurchase.purchaseCount += 1
       existingPurchase.vestingSchedule.totalTokens += vibesAmount
-      mockStorage.purchases.set(userAddress, existingPurchase)
+      storage.purchases.set(userAddress, existingPurchase)
     } else {
-      mockStorage.purchases.set(userAddress, createMockUserPurchase(userAddress, vibesAmount))
+      storage.purchases.set(userAddress, createMockUserPurchase(userAddress, vibesAmount))
     }
     
     // Save to localStorage
-    const purchasesObj = Object.fromEntries(mockStorage.purchases)
+    const purchasesObj = Object.fromEntries(storage.purchases)
     saveToLocalStorage('vibes_purchases', purchasesObj)
     
     const explorerUrl = `https://explorer.solana.com/tx/${signature}?cluster=devnet`
@@ -164,7 +182,7 @@ export const purchaseTokensWithSOL = async (
     console.log('✅ [SMART CONTRACT] Purchase successful:', {
       signature,
       vibesAmount,
-      vestingSchedule: mockStorage.purchases.get(userAddress).vestingSchedule
+      vestingSchedule: storage.purchases.get(userAddress).vestingSchedule
     })
 
     return {
@@ -172,7 +190,7 @@ export const purchaseTokensWithSOL = async (
       signature,
       explorerUrl,
       vibesAmount,
-      vestingSchedule: mockStorage.purchases.get(userAddress).vestingSchedule
+      vestingSchedule: storage.purchases.get(userAddress).vestingSchedule
     }
 
   } catch (error: any) {
@@ -200,7 +218,8 @@ export const claimVestedTokens = async (
 
     // Get user purchase from mock storage
     const userAddress = wallet.publicKey.toString()
-    const userPurchase = mockStorage.purchases.get(userAddress)
+    const storage = getMockStorage()
+    const userPurchase = storage.purchases.get(userAddress)
     
     if (!userPurchase) {
       throw new Error('No purchase found for this user')
@@ -242,10 +261,10 @@ export const claimVestedTokens = async (
     // Update claimed status
     userPurchase.vestingSchedule.claimedAmounts[period] = claimableAmount
     userPurchase.vestingSchedule.claimedFlags[period] = true
-    mockStorage.purchases.set(userAddress, userPurchase)
+    storage.purchases.set(userAddress, userPurchase)
     
     // Save to localStorage
-    const purchasesObj = Object.fromEntries(mockStorage.purchases)
+    const purchasesObj = Object.fromEntries(storage.purchases)
     saveToLocalStorage('vibes_purchases', purchasesObj)
     
     const explorerUrl = `https://explorer.solana.com/tx/${signature}?cluster=devnet`
@@ -286,7 +305,8 @@ export const getUserPurchaseData = async (
     }
 
     const userAddress = userPublicKey.toString()
-    const userPurchase = mockStorage.purchases.get(userAddress)
+    const storage = getMockStorage()
+    const userPurchase = storage.purchases.get(userAddress)
     
     return userPurchase || null
 
@@ -326,7 +346,10 @@ export const getExplorerAccountUrl = (address: string, cluster: string = 'devnet
 
 // Utility function to clear mock data (for testing)
 export const clearMockData = () => {
-  mockStorage.purchases.clear()
-  localStorage.removeItem('vibes_purchases')
+  const storage = getMockStorage()
+  storage.purchases.clear()
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('vibes_purchases')
+  }
   console.log('🧹 Mock data cleared')
 }

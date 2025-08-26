@@ -70,7 +70,7 @@ export function TransactionInfo({
   }
 
   return (
-    <div className="bg-gray-800/50 border border-gray-600 rounded-lg p-4 mt-4">
+    <div className="bg-BG-FFF-8 border border-stroct-1 rounded-lg p-4 mt-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <span className="text-2xl">{getStatusIcon()}</span>
@@ -79,7 +79,7 @@ export function TransactionInfo({
               {getTypeText()}
             </div>
             {timestamp && (
-              <div className="text-xs text-gray-500">
+              <div className="text-xs text-foundation-blue-50">
                 {timestamp.toLocaleString()}
               </div>
             )}
@@ -89,7 +89,7 @@ export function TransactionInfo({
         {(signature || programId || tokenMint) && (
           <button
             onClick={() => setShowDetails(!showDetails)}
-            className="text-blue-400 hover:text-blue-300 text-sm transition-colors"
+            className="text-primary-1 hover:text-primary-2 text-sm my-transition"
           >
             {showDetails ? 'Hide Details' : 'Show Details'}
           </button>
@@ -97,25 +97,25 @@ export function TransactionInfo({
       </div>
 
       {amount && (
-        <div className="mt-2 text-sm text-gray-300">
+        <div className="mt-2 text-sm text-foundation-blue-20">
           Amount: <span className="font-medium">{amount.toLocaleString()} VIBES</span>
         </div>
       )}
 
       {showDetails && (
-        <div className="mt-4 space-y-3 border-t border-gray-700 pt-4">
+        <div className="mt-4 space-y-3 border-t border-primary-6 pt-4">
           {signature && (
             <div className="space-y-2">
-              <div className="text-sm font-medium text-gray-400">Transaction Signature:</div>
-              <div className="flex items-center justify-between bg-gray-900/50 rounded p-2">
-                <code className="text-xs text-green-400 break-all">
+              <div className="text-sm font-medium text-foundation-blue-60">Transaction Signature:</div>
+              <div className="flex items-center justify-between bg-primary-4 rounded p-2">
+                <code className="text-xs text-primary-1 break-all">
                   {signature}
                 </code>
                 <a
                   href={getExplorerUrl(signature, 'devnet')}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-400 hover:text-blue-300 text-xs ml-2 whitespace-nowrap"
+                  className="text-primary-1 hover:text-primary-2 text-xs ml-2 whitespace-nowrap my-transition"
                 >
                   View on Solscan ↗
                 </a>
@@ -125,16 +125,16 @@ export function TransactionInfo({
 
           {programId && (
             <div className="space-y-2">
-              <div className="text-sm font-medium text-gray-400">Program ID:</div>
-              <div className="flex items-center justify-between bg-gray-900/50 rounded p-2">
-                <code className="text-xs text-purple-400 break-all">
+              <div className="text-sm font-medium text-foundation-blue-60">Program ID:</div>
+              <div className="flex items-center justify-between bg-primary-4 rounded p-2">
+                <code className="text-xs text-highlight-1 break-all">
                   {programId}
                 </code>
                 <a
                   href={getExplorerAccountUrl(programId, 'devnet')}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-400 hover:text-blue-300 text-xs ml-2 whitespace-nowrap"
+                  className="text-primary-1 hover:text-primary-2 text-xs ml-2 whitespace-nowrap my-transition"
                 >
                   View Program ↗
                 </a>
@@ -144,16 +144,16 @@ export function TransactionInfo({
 
           {tokenMint && (
             <div className="space-y-2">
-              <div className="text-sm font-medium text-gray-400">VIBES Token Mint:</div>
-              <div className="flex items-center justify-between bg-gray-900/50 rounded p-2">
-                <code className="text-xs text-orange-400 break-all">
+              <div className="text-sm font-medium text-foundation-blue-60">VIBES Token Mint:</div>
+              <div className="flex items-center justify-between bg-primary-4 rounded p-2">
+                <code className="text-xs text-highlight-2 break-all">
                   {tokenMint}
                 </code>
                 <a
                   href={getExplorerAccountUrl(tokenMint, 'devnet')}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-400 hover:text-blue-300 text-xs ml-2 whitespace-nowrap"
+                  className="text-primary-1 hover:text-primary-2 text-xs ml-2 whitespace-nowrap my-transition"
                 >
                   View Token ↗
                 </a>
@@ -163,16 +163,16 @@ export function TransactionInfo({
 
           {userAddress && (
             <div className="space-y-2">
-              <div className="text-sm font-medium text-gray-400">Your Wallet:</div>
-              <div className="flex items-center justify-between bg-gray-900/50 rounded p-2">
-                <code className="text-xs text-cyan-400 break-all">
+              <div className="text-sm font-medium text-foundation-blue-60">Your Wallet:</div>
+              <div className="flex items-center justify-between bg-primary-4 rounded p-2">
+                <code className="text-xs text-primary-2 break-all">
                   {userAddress}
                 </code>
                 <a
                   href={getExplorerAccountUrl(userAddress, 'devnet')}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-400 hover:text-blue-300 text-xs ml-2 whitespace-nowrap"
+                  className="text-primary-1 hover:text-primary-2 text-xs ml-2 whitespace-nowrap my-transition"
                 >
                   View Wallet ↗
                 </a>
