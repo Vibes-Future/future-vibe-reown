@@ -6,7 +6,7 @@
 import BN from 'bn.js'
 
 // Función para inicializar todos los polyfills necesarios para Solana Web3.js
-export function initializeSolanaPolyfills() {
+export async function initializeSolanaPolyfills() {
   if (typeof window === 'undefined') return
 
   // Asegurar que BN está disponible globalmente
@@ -22,9 +22,14 @@ export function initializeSolanaPolyfills() {
   // Polyfill específico para Buffer
   if (typeof (window as any).Buffer === 'undefined') {
     try {
-      const { Buffer } = require('buffer')
-      ;(window as any).Buffer = Buffer
-      ;(globalThis as any).Buffer = Buffer
+      // Usar import dinámico en lugar de require para compatibilidad con navegador
+      import('buffer').then(({ Buffer }) => {
+        (window as any).Buffer = Buffer
+        ;(globalThis as any).Buffer = Buffer
+        console.log('✅ Buffer polyfill loaded successfully')
+      }).catch((error) => {
+        console.warn('Buffer polyfill not available:', error)
+      })
     } catch (error) {
       console.warn('Buffer polyfill not available:', error)
     }
