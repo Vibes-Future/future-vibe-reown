@@ -224,29 +224,65 @@ export const purchaseTokensWithSOL = async (
     // Calculate tokens based on SOL amount (1 SOL = 1000 VIBES)
     const vibesAmount = solAmount * 1000
     
-    // Save purchase data to localStorage for vesting system
-    if (typeof window !== 'undefined') {
-      try {
-        const userAddress = wallet.publicKey.toString()
-        const purchaseData = {
-          totalTokensPurchased: vibesAmount,
-          totalSolSpent: solAmount,
-          totalUsdcSpent: 0,
-          purchaseCount: 1,
-          purchaseDate: new Date().toISOString(),
-          transactionSignature: simulatedSignature
-        }
-        
-        // Save to recent purchases for immediate access
-        const recentPurchases = JSON.parse(localStorage.getItem('vibes_recent_purchases') || '{}')
-        recentPurchases[userAddress] = purchaseData
-        localStorage.setItem('vibes_recent_purchases', JSON.stringify(recentPurchases))
-        
-        console.log('💾 Purchase data saved to localStorage:', purchaseData)
-      } catch (error) {
-        console.warn('Failed to save purchase data:', error)
-      }
-    }
+         // Save purchase data to unified localStorage for vesting system
+     if (typeof window !== 'undefined') {
+       try {
+         const userAddress = wallet.publicKey.toString()
+         const purchaseData = {
+           totalTokensPurchased: vibesAmount,
+           totalSolSpent: solAmount,
+           totalUsdcSpent: 0,
+           purchaseCount: 1,
+           purchaseDate: new Date().toISOString(),
+           transactionSignature: simulatedSignature
+         }
+         
+         // Save to unified storage (primary)
+         const unifiedPurchases = JSON.parse(localStorage.getItem('vibes_unified_purchases') || '{}')
+         unifiedPurchases[userAddress] = {
+           ...purchaseData,
+           lastUpdated: new Date().toISOString(),
+           source: 'direct_purchase'
+         }
+         localStorage.setItem('vibes_unified_purchases', JSON.stringify(unifiedPurchases))
+         
+         // Also save to recent purchases for backward compatibility
+         const recentPurchases = JSON.parse(localStorage.getItem('vibes_recent_purchases') || '{}')
+         recentPurchases[userAddress] = purchaseData
+         localStorage.setItem('vibes_recent_purchases', JSON.stringify(recentPurchases))
+         
+         // Sync to legacy format for compatibility
+         const legacyPurchase = {
+           id: `legacy_${Date.now()}`,
+           solAmount: solAmount,
+           usdcAmount: 0,
+           tokensPurchased: vibesAmount,
+           solPriceAtPurchase: 100,
+           tokenPriceAtPurchase: 0.05,
+           purchaseDate: new Date(),
+           transactionSignature: simulatedSignature,
+           vestingSchedule: {
+             listingTimestamp: new Date(Date.now() + (30 * 24 * 60 * 60 * 1000)),
+             claimDates: [
+               new Date(Date.now() + (30 * 24 * 60 * 60 * 1000)),
+               new Date(Date.now() + (60 * 24 * 60 * 60 * 1000)),
+               new Date(Date.now() + (90 * 24 * 60 * 60 * 1000)),
+               new Date(Date.now() + (120 * 24 * 60 * 60 * 1000))
+             ],
+             claimedAmounts: [0, 0, 0, 0],
+             claimedFlags: [false, false, false, false]
+           }
+         }
+         
+         const existingLegacy = JSON.parse(localStorage.getItem('vibes_user_purchases') || '{}')
+         existingLegacy[userAddress] = [legacyPurchase]
+         localStorage.setItem('vibes_user_purchases', JSON.stringify(existingLegacy))
+         
+         console.log('💾 Purchase data saved to unified, recent, and legacy storage:', purchaseData)
+       } catch (error) {
+         console.warn('Failed to save purchase data:', error)
+       }
+     }
     
     return {
       success: true,
@@ -401,43 +437,19 @@ export const getUserPurchaseData = async (connection: Connection, userPublicKey:
   console.log('🔄 Fetching user purchase data (direct mode)...', userPublicKey.toString())
   
   try {
-    // Read from localStorage where purchases are actually stored
-    if (typeof window !== 'undefined') {
-      const vibesPurchasesData = localStorage.getItem('vibes_purchases')
-      if (vibesPurchasesData) {
-        const purchasesObj = JSON.parse(vibesPurchasesData)
-        const userAddress = userPublicKey.toString()
-        const userPurchase = purchasesObj[userAddress]
-        
-        if (userPurchase) {
-          console.log('✅ Found user purchase data in localStorage:', userPurchase)
-          return {
-            user: userPublicKey,
-            totalTokensPurchased: userPurchase.totalTokensPurchased || 0,
-            totalSolSpent: userPurchase.totalSolSpent || 0,
-            totalUsdcSpent: userPurchase.totalUsdcSpent || 0,
-            purchaseCount: userPurchase.purchaseCount || 0,
-            vestingSchedule: userPurchase.vestingSchedule || {
-              claimedAmounts: [0, 0, 0, 0],
-              claimedFlags: [false, false, false, false]
-            }
-          }
-        }
-      }
-    }
+    if (typeof window === 'undefined') return null
     
-    // Check if there are recent purchases that need to be synced
-    console.log('🔍 Checking for recent purchases to sync...')
-    const recentPurchases = localStorage.getItem('vibes_recent_purchases')
-    if (recentPurchases) {
+    const userAddress = userPublicKey.toString()
+    
+    // First, try to get from the unified storage
+    const unifiedData = localStorage.getItem('vibes_unified_purchases')
+    if (unifiedData) {
       try {
-        const purchases = JSON.parse(recentPurchases)
-        const userAddress = userPublicKey.toString()
+        const purchases = JSON.parse(unifiedData)
         const userPurchase = purchases[userAddress]
         
         if (userPurchase) {
-          console.log('✅ Found recent purchase data to sync:', userPurchase)
-          // Convert to the format expected by the vesting system
+          console.log('✅ Found user purchase data in unified storage:', userPurchase)
           return {
             user: userPublicKey,
             totalTokensPurchased: userPurchase.totalTokensPurchased || 0,
@@ -446,7 +458,40 @@ export const getUserPurchaseData = async (connection: Connection, userPublicKey:
             purchaseCount: userPurchase.purchaseCount || 1,
             vestingSchedule: {
               totalTokens: userPurchase.totalTokensPurchased || 0,
-              listingTimestamp: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60), // 30 days from now
+              listingTimestamp: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60),
+              claimedAmounts: [0, 0, 0, 0],
+              claimedFlags: [false, false, false, false]
+            }
+          }
+        }
+      } catch (parseError) {
+        console.warn('Failed to parse unified purchases:', parseError)
+      }
+    }
+    
+    // If no unified data, try to sync from recent purchases
+    console.log('🔍 No unified data found, attempting to sync from recent purchases...')
+    const recentPurchases = localStorage.getItem('vibes_recent_purchases')
+    if (recentPurchases) {
+      try {
+        const purchases = JSON.parse(recentPurchases)
+        const userPurchase = purchases[userAddress]
+        
+        if (userPurchase) {
+          console.log('✅ Found recent purchase data to sync:', userPurchase)
+          
+          // Sync to unified storage
+          await syncPurchaseToUnifiedStorage(userAddress, userPurchase)
+          
+          return {
+            user: userPublicKey,
+            totalTokensPurchased: userPurchase.totalTokensPurchased || 0,
+            totalSolSpent: userPurchase.totalSolSpent || 0,
+            totalUsdcSpent: userPurchase.totalUsdcSpent || 0,
+            purchaseCount: userPurchase.purchaseCount || 1,
+            vestingSchedule: {
+              totalTokens: userPurchase.totalTokensPurchased || 0,
+              listingTimestamp: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60),
               claimedAmounts: [0, 0, 0, 0],
               claimedFlags: [false, false, false, false]
             }
@@ -457,11 +502,63 @@ export const getUserPurchaseData = async (connection: Connection, userPublicKey:
       }
     }
     
-    console.log('ℹ️ No purchase data found for user:', userPublicKey.toString())
+    console.log('ℹ️ No purchase data found for user:', userAddress)
     return null
     
   } catch (error) {
     console.error('❌ Error reading user purchase data:', error)
     return null
+  }
+}
+
+// Helper function to sync purchase data to unified storage
+async function syncPurchaseToUnifiedStorage(userAddress: string, purchaseData: any) {
+  try {
+    console.log('🔄 Syncing purchase data to unified storage...')
+    
+    // Read existing unified data
+    const existingUnified = JSON.parse(localStorage.getItem('vibes_unified_purchases') || '{}')
+    
+    // Update with new data
+    existingUnified[userAddress] = {
+      ...purchaseData,
+      lastSynced: new Date().toISOString(),
+      syncedFrom: 'recent_purchases'
+    }
+    
+    // Save back to unified storage
+    localStorage.setItem('vibes_unified_purchases', JSON.stringify(existingUnified))
+    
+    // Also sync to legacy format for compatibility
+    const legacyPurchase = {
+      id: `legacy_${Date.now()}`,
+      solAmount: purchaseData.totalSolSpent || 0,
+      usdcAmount: purchaseData.totalUsdcSpent || 0,
+      tokensPurchased: purchaseData.totalTokensPurchased || 0,
+      solPriceAtPurchase: 100,
+      tokenPriceAtPurchase: 0.05,
+      purchaseDate: new Date(purchaseData.purchaseDate || Date.now()),
+      transactionSignature: purchaseData.transactionSignature || `synced_${Date.now()}`,
+      vestingSchedule: {
+        listingTimestamp: new Date(Date.now() + (30 * 24 * 60 * 60 * 1000)),
+        claimDates: [
+          new Date(Date.now() + (30 * 24 * 60 * 60 * 1000)),
+          new Date(Date.now() + (60 * 24 * 60 * 60 * 1000)),
+          new Date(Date.now() + (90 * 24 * 60 * 60 * 1000)),
+          new Date(Date.now() + (120 * 24 * 60 * 60 * 1000))
+        ],
+        claimedAmounts: [0, 0, 0, 0],
+        claimedFlags: [false, false, false, false]
+      }
+    }
+    
+    const existingLegacy = JSON.parse(localStorage.getItem('vibes_user_purchases') || '{}')
+    existingLegacy[userAddress] = [legacyPurchase]
+    localStorage.setItem('vibes_user_purchases', JSON.stringify(existingLegacy))
+    
+    console.log('✅ Purchase data synced to unified and legacy storage')
+    
+  } catch (error) {
+    console.error('❌ Failed to sync purchase data:', error)
   }
 }

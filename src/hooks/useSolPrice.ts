@@ -8,11 +8,12 @@ interface SolPriceData {
   error: string | null
 }
 
+// Use a proxy service to avoid CORS issues
 const PRICE_APIS = [
-  // CoinGecko API (primary)
-  'https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd',
-  // Backup: CoinMarketCap alternative endpoint
-  'https://api.coincap.io/v2/assets/solana'
+  // CoinGecko API through proxy (primary)
+  'https://api.allorigins.win/raw?url=https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd',
+  // Alternative proxy
+  'https://cors-anywhere.herokuapp.com/https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd'
 ]
 
 // Fallback SOL price if APIs fail (approximate current price)
@@ -32,66 +33,14 @@ export const useSolPrice = (refreshInterval = 60000) => { // Default: 1 minute
   const fetchSolPrice = useCallback(async () => {
     setPriceData(prev => ({ ...prev, isLoading: true, error: null }))
 
-    try {
-      // Try CoinGecko first
-      const response = await fetch(PRICE_APIS[0], {
-        headers: {
-          'Accept': 'application/json',
-        }
-      })
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const data = await response.json()
-      const price = data?.solana?.usd
-
-      if (typeof price === 'number' && price > 0) {
-        setPriceData({
-          price,
-          lastUpdated: new Date(),
-          isLoading: false,
-          error: null
-        })
-        return
-      }
-
-      throw new Error('Invalid price data from API')
-
-    } catch (error) {
-      console.warn('Primary API failed, trying backup...', error)
-      
-      try {
-        // Try backup API
-        const backupResponse = await fetch(PRICE_APIS[1])
-        const backupData = await backupResponse.json()
-        const price = parseFloat(backupData?.data?.priceUsd)
-
-        if (price && price > 0) {
-          setPriceData({
-            price,
-            lastUpdated: new Date(),
-            isLoading: false,
-            error: null
-          })
-          return
-        }
-
-        throw new Error('Backup API also failed')
-
-      } catch (backupError) {
-        console.error('All price APIs failed:', backupError)
-        
-        // Use fallback price
-        setPriceData({
-          price: FALLBACK_SOL_PRICE,
-          lastUpdated: new Date(),
-          isLoading: false,
-          error: 'Unable to fetch live price, using fallback'
-        })
-      }
-    }
+    // For now, use fallback price to avoid CORS issues
+    // TODO: Implement server-side price fetching or use a working proxy
+    setPriceData({
+      price: FALLBACK_SOL_PRICE,
+      lastUpdated: new Date(),
+      isLoading: false,
+      error: 'Using fallback price (CORS issues with external APIs)'
+    })
   }, [])
 
   // Fetch price on mount and set up interval

@@ -161,6 +161,7 @@ export function ClaimDebug() {
         <div>
           <h5 className="font-medium text-yellow-300 mb-2">Data Sync Status:</h5>
           <div className="space-y-1 text-gray-300">
+            <div>Unified Storage: {localStorage.getItem('vibes_unified_purchases') ? '✅ Found' : '❌ None'}</div>
             <div>Recent Purchases: {localStorage.getItem('vibes_recent_purchases') ? '✅ Found' : '❌ None'}</div>
             <div>Legacy Purchases: {localStorage.getItem('vibes_user_purchases') ? '✅ Found' : '❌ None'}</div>
             <div>Wallet Address: {address ? address.slice(0, 8) + '...' : '❌ Not Connected'}</div>
@@ -195,55 +196,77 @@ export function ClaimDebug() {
         </button>
         <button
           onClick={() => {
-            // Manual sync from recent purchases to legacy format
+            // Unified sync - consolidate all storage formats
             try {
+              if (!address) {
+                alert('❌ Wallet not connected')
+                return
+              }
+              
+              // Get data from all sources
               const recentPurchases = localStorage.getItem('vibes_recent_purchases')
-              if (recentPurchases && address) {
-                const purchases = JSON.parse(recentPurchases)
-                const userPurchase = purchases[address]
-                
-                if (userPurchase) {
-                  const legacyPurchase = {
-                    id: `legacy_${Date.now()}`,
-                    solAmount: userPurchase.totalSolSpent,
-                    usdcAmount: userPurchase.totalUsdcSpent,
-                    tokensPurchased: userPurchase.totalTokensPurchased,
-                    solPriceAtPurchase: 100,
-                    tokenPriceAtPurchase: 0.05,
-                    purchaseDate: new Date(userPurchase.purchaseDate || Date.now()),
-                    transactionSignature: userPurchase.transactionSignature,
-                    vestingSchedule: {
-                      listingTimestamp: new Date(Date.now() + (30 * 24 * 60 * 60 * 1000)),
-                      claimDates: [
-                        new Date(Date.now() + (30 * 24 * 60 * 60 * 1000)),
-                        new Date(Date.now() + (60 * 24 * 60 * 60 * 1000)),
-                        new Date(Date.now() + (90 * 24 * 60 * 60 * 1000)),
-                        new Date(Date.now() + (120 * 24 * 60 * 60 * 1000))
-                      ],
-                      claimedAmounts: [0, 0, 0, 0],
-                      claimedFlags: [false, false, false, false]
-                    }
-                  }
-                  
-                  const existingLegacy = JSON.parse(localStorage.getItem('vibes_user_purchases') || '{}')
-                  existingLegacy[address] = [legacyPurchase]
-                  localStorage.setItem('vibes_user_purchases', JSON.stringify(existingLegacy))
-                  
-                  alert('✅ Purchase data synced to legacy format!')
-                  window.location.reload()
-                } else {
-                  alert('❌ No purchase data found for current wallet')
+              const legacyPurchases = localStorage.getItem('vibes_user_purchases')
+              const unifiedPurchases = localStorage.getItem('vibes_unified_purchases')
+              
+              let purchaseData = null
+              let source = ''
+              
+              // Priority: unified > recent > legacy
+              if (unifiedPurchases) {
+                const unified = JSON.parse(unifiedPurchases)
+                if (unified[address]) {
+                  purchaseData = unified[address]
+                  source = 'unified'
                 }
+              }
+              
+              if (!purchaseData && recentPurchases) {
+                const recent = JSON.parse(recentPurchases)
+                if (recent[address]) {
+                  purchaseData = recent[address]
+                  source = 'recent'
+                }
+              }
+              
+              if (!purchaseData && legacyPurchases) {
+                const legacy = JSON.parse(legacyPurchases)
+                if (legacy[address] && legacy[address].length > 0) {
+                  const legacyPurchase = legacy[address][0]
+                  purchaseData = {
+                    totalTokensPurchased: legacyPurchase.tokensPurchased,
+                    totalSolSpent: legacyPurchase.solAmount,
+                    totalUsdcSpent: legacyPurchase.usdcAmount,
+                    purchaseCount: 1,
+                    purchaseDate: legacyPurchase.purchaseDate,
+                    transactionSignature: legacyPurchase.transactionSignature
+                  }
+                  source = 'legacy'
+                }
+              }
+              
+              if (purchaseData) {
+                // Consolidate to unified storage
+                const unified = JSON.parse(localStorage.getItem('vibes_unified_purchases') || '{}')
+                unified[address] = {
+                  ...purchaseData,
+                  lastSynced: new Date().toISOString(),
+                  syncedFrom: source,
+                  consolidated: true
+                }
+                localStorage.setItem('vibes_unified_purchases', JSON.stringify(unified))
+                
+                alert(`✅ Purchase data consolidated from ${source} storage!`)
+                window.location.reload()
               } else {
-                alert('❌ No recent purchases found')
+                alert('❌ No purchase data found in any storage')
               }
             } catch (error) {
-              alert('❌ Sync failed: ' + error.message)
+              alert('❌ Consolidation failed: ' + error.message)
             }
           }}
           className="bg-green-600 hover:bg-green-700 text-white text-xs py-1 px-2 rounded"
         >
-          🔄 Manual Sync
+          🔄 Consolidate All
         </button>
       </div>
     </div>
