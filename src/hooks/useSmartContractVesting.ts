@@ -143,8 +143,69 @@ export const useSmartContractVesting = (): UseSmartContractVestingReturn => {
           vestingSchedule: purchaseData.vestingSchedule
         })
       } else {
-        console.log('ℹ️ No purchase data found for user')
-        setUserPurchase(null)
+        // If no blockchain data, try to load from localStorage
+        console.log('🔍 No blockchain data found, checking localStorage...')
+        try {
+          const recentPurchases = localStorage.getItem('vibes_recent_purchases')
+          if (recentPurchases) {
+            const purchases = JSON.parse(recentPurchases)
+            const userPurchase = purchases[address]
+            
+            if (userPurchase) {
+              console.log('✅ Found purchase data in localStorage:', userPurchase)
+              setUserPurchase({
+                userAddress: address,
+                totalTokensPurchased: Number(userPurchase.totalTokensPurchased || 0),
+                totalSOLSpent: Number(userPurchase.totalSolSpent || 0),
+                totalUSDCSpent: Number(userPurchase.totalUsdcSpent || 0),
+                purchaseCount: Number(userPurchase.purchaseCount || 1),
+                vestingSchedule: {
+                  totalTokens: Number(userPurchase.totalTokensPurchased || 0),
+                  listingTimestamp: Number(configData?.listingTimestamp || Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60)),
+                  claimedAmounts: [0, 0, 0, 0],
+                  claimedFlags: [false, false, false, false]
+                }
+              })
+              
+              // Also save to legacy format for compatibility
+              const legacyPurchase = {
+                id: `legacy_${Date.now()}`,
+                solAmount: userPurchase.totalSolSpent,
+                usdcAmount: userPurchase.totalUsdcSpent,
+                tokensPurchased: userPurchase.totalTokensPurchased,
+                solPriceAtPurchase: 100,
+                tokenPriceAtPurchase: 0.05,
+                purchaseDate: new Date(userPurchase.purchaseDate || Date.now()),
+                transactionSignature: userPurchase.transactionSignature,
+                vestingSchedule: {
+                  listingTimestamp: new Date(Date.now() + (30 * 24 * 60 * 60 * 1000)),
+                  claimDates: [
+                    new Date(Date.now() + (30 * 24 * 60 * 60 * 1000)), // 30 days
+                    new Date(Date.now() + (60 * 24 * 60 * 60 * 1000)), // 60 days
+                    new Date(Date.now() + (90 * 24 * 60 * 60 * 1000)), // 90 days
+                    new Date(Date.now() + (120 * 24 * 60 * 60 * 1000)) // 120 days
+                  ],
+                  claimedAmounts: [0, 0, 0, 0],
+                  claimedFlags: [false, false, false, false]
+                }
+              }
+              
+              // Save to legacy format
+              const existingLegacy = JSON.parse(localStorage.getItem('vibes_user_purchases') || '{}')
+              existingLegacy[address] = [legacyPurchase]
+              localStorage.setItem('vibes_user_purchases', JSON.stringify(existingLegacy))
+              
+              console.log('💾 Legacy purchase data saved for compatibility')
+            }
+          }
+        } catch (localStorageError) {
+          console.warn('Failed to load from localStorage:', localStorageError)
+        }
+        
+        if (!userPurchase) {
+          console.log('ℹ️ No purchase data found for user')
+          setUserPurchase(null)
+        }
       }
 
     } catch (err: any) {
@@ -297,6 +358,57 @@ export const useSmartContractVesting = (): UseSmartContractVestingReturn => {
       loadSmartContractData()
     }
   }, [isSmartContractMode, loadSmartContractData])
+
+  // Auto-sync localStorage data when wallet connects
+  useEffect(() => {
+    if (isConnected && address && !isSmartContractMode) {
+      console.log('🔄 Auto-syncing localStorage data for connected wallet...')
+      // Try to load from localStorage and convert to legacy format
+      try {
+        const recentPurchases = localStorage.getItem('vibes_recent_purchases')
+        if (recentPurchases) {
+          const purchases = JSON.parse(recentPurchases)
+          const userPurchase = purchases[address]
+          
+          if (userPurchase) {
+            console.log('✅ Found purchase data to sync:', userPurchase)
+            
+            // Convert to legacy format for compatibility
+            const legacyPurchase = {
+              id: `legacy_${Date.now()}`,
+              solAmount: userPurchase.totalSolSpent,
+              usdcAmount: userPurchase.totalUsdcSpent,
+              tokensPurchased: userPurchase.totalTokensPurchased,
+              solPriceAtPurchase: 100,
+              tokenPriceAtPurchase: 0.05,
+              purchaseDate: new Date(userPurchase.purchaseDate || Date.now()),
+              transactionSignature: userPurchase.transactionSignature,
+              vestingSchedule: {
+                listingTimestamp: new Date(Date.now() + (30 * 24 * 60 * 60 * 1000)),
+                claimDates: [
+                  new Date(Date.now() + (30 * 24 * 60 * 60 * 1000)), // 30 days
+                  new Date(Date.now() + (60 * 24 * 60 * 60 * 1000)), // 60 days
+                  new Date(Date.now() + (90 * 24 * 60 * 60 * 1000)), // 90 days
+                  new Date(Date.now() + (120 * 24 * 60 * 60 * 1000)) // 120 days
+                ],
+                claimedAmounts: [0, 0, 0, 0],
+                claimedFlags: [false, false, false, false]
+              }
+            }
+            
+            // Save to legacy format
+            const existingLegacy = JSON.parse(localStorage.getItem('vibes_user_purchases') || '{}')
+            existingLegacy[address] = [legacyPurchase]
+            localStorage.setItem('vibes_user_purchases', JSON.stringify(existingLegacy))
+            
+            console.log('💾 Purchase data synced to legacy format for compatibility')
+          }
+        }
+      } catch (error) {
+        console.warn('Failed to auto-sync localStorage data:', error)
+      }
+    }
+  }, [isConnected, address, isSmartContractMode])
 
   // Calculate totals
   const totalTokensPurchased = userPurchase?.totalTokensPurchased || 0

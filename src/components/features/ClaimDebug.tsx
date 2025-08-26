@@ -193,6 +193,58 @@ export function ClaimDebug() {
         >
           🔄 Force Sync
         </button>
+        <button
+          onClick={() => {
+            // Manual sync from recent purchases to legacy format
+            try {
+              const recentPurchases = localStorage.getItem('vibes_recent_purchases')
+              if (recentPurchases && address) {
+                const purchases = JSON.parse(recentPurchases)
+                const userPurchase = purchases[address]
+                
+                if (userPurchase) {
+                  const legacyPurchase = {
+                    id: `legacy_${Date.now()}`,
+                    solAmount: userPurchase.totalSolSpent,
+                    usdcAmount: userPurchase.totalUsdcSpent,
+                    tokensPurchased: userPurchase.totalTokensPurchased,
+                    solPriceAtPurchase: 100,
+                    tokenPriceAtPurchase: 0.05,
+                    purchaseDate: new Date(userPurchase.purchaseDate || Date.now()),
+                    transactionSignature: userPurchase.transactionSignature,
+                    vestingSchedule: {
+                      listingTimestamp: new Date(Date.now() + (30 * 24 * 60 * 60 * 1000)),
+                      claimDates: [
+                        new Date(Date.now() + (30 * 24 * 60 * 60 * 1000)),
+                        new Date(Date.now() + (60 * 24 * 60 * 60 * 1000)),
+                        new Date(Date.now() + (90 * 24 * 60 * 60 * 1000)),
+                        new Date(Date.now() + (120 * 24 * 60 * 60 * 1000))
+                      ],
+                      claimedAmounts: [0, 0, 0, 0],
+                      claimedFlags: [false, false, false, false]
+                    }
+                  }
+                  
+                  const existingLegacy = JSON.parse(localStorage.getItem('vibes_user_purchases') || '{}')
+                  existingLegacy[address] = [legacyPurchase]
+                  localStorage.setItem('vibes_user_purchases', JSON.stringify(existingLegacy))
+                  
+                  alert('✅ Purchase data synced to legacy format!')
+                  window.location.reload()
+                } else {
+                  alert('❌ No purchase data found for current wallet')
+                }
+              } else {
+                alert('❌ No recent purchases found')
+              }
+            } catch (error) {
+              alert('❌ Sync failed: ' + error.message)
+            }
+          }}
+          className="bg-green-600 hover:bg-green-700 text-white text-xs py-1 px-2 rounded"
+        >
+          🔄 Manual Sync
+        </button>
       </div>
     </div>
   )
