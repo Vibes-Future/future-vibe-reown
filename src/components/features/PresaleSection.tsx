@@ -17,7 +17,7 @@ import { useUsdcPrice } from '@/hooks/useUsdcPrice'
 import { useVesting } from '@/hooks/useVesting'
 import { useSmartContractVesting } from '@/hooks/useSmartContractVesting'
 import { usePresaleStats } from '@/hooks/usePresaleStats'
-import { TransactionInfo, SmartContractStatus } from '@/components/TransactionInfo'
+import { TransactionInfo, SmartContractStatus } from './TransactionInfo'
 
 export function PresaleSection() {
   const [solAmount, setSolAmount] = useState<string>('')

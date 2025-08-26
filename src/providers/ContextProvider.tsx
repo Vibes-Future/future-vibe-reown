@@ -2,8 +2,8 @@
 
 // Context provider for Reown AppKit and application state
 import React, { ReactNode } from 'react'
-import '@/config/appkit' // Initialize AppKit configuration
-import BNPolyfillProvider from '@/components/BNPolyfillProvider'
+import BNPolyfillProvider from './BNPolyfillProvider'
+import { AppKitProvider } from './AppKitProvider'
 
 interface Props {
   children: ReactNode
@@ -12,9 +12,11 @@ interface Props {
 export function ContextProvider({ children }: Props) {
   return (
     <BNPolyfillProvider>
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-800">
-        {children}
-      </div>
+      <AppKitProvider>
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-800">
+          {children}
+        </div>
+      </AppKitProvider>
     </BNPolyfillProvider>
   )
 }

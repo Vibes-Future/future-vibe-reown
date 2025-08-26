@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { getExplorerUrl, getExplorerAccountUrl } from '@/utils/solana-integration'
+import { getExplorerUrl, getExplorerAccountUrl } from '@/utils/solana-direct'
 
 interface TransactionInfoProps {
   signature?: string | null

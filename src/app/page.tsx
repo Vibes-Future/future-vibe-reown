@@ -1,13 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { Navbar } from '@/components/Navbar'
-import { PresaleSection } from '@/components/PresaleSection'
-import { StakingSection } from '@/components/StakingSection'
-import { VestingDashboard } from '@/components/VestingDashboard'
-import { PricingTable } from '@/components/PricingTable'
-import DevnetTestingConfig from '@/components/DevnetTestingConfig'
-import { EnvironmentDebug } from '@/components/EnvironmentDebug'
+import { Navbar } from '@/components/layout/Navbar'
+import { PresaleSection } from '@/components/features/PresaleSection'
+import { StakingSection } from '@/components/features/StakingSection'
+import { VestingDashboard } from '@/components/features/VestingDashboard'
+import { PricingTable } from '@/components/features/PricingTable'
 
 
 export default function Home() {
@@ -82,11 +80,7 @@ export default function Home() {
 
 
       
-              {/* Development Testing Config */}
-        <DevnetTestingConfig />
-        
-        {/* Environment Debug (Development Only) */}
-        <EnvironmentDebug />
+      
       </div>
     )
   }

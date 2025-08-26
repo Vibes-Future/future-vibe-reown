@@ -6,7 +6,7 @@ import { useVesting } from '@/hooks/useVesting'
 import { useSmartContractVesting } from '@/hooks/useSmartContractVesting'
 import { formatTokens, formatNumber } from '@/utils/formatters'
 import { VestingCalculator } from '@/types/vesting'
-import { TransactionInfo, SmartContractStatus } from '@/components/TransactionInfo'
+import { TransactionInfo, SmartContractStatus } from './TransactionInfo'
 
 export function VestingDashboard() {
   const { isConnected, address } = useAppKitAccount()

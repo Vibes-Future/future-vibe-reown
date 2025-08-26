@@ -60,6 +60,11 @@ export const getExplorerUrl = (signature: string, cluster: string = 'devnet') =>
   return `https://solscan.io/tx/${signature}?cluster=${cluster}`
 }
 
+// Get explorer URL for an account
+export const getExplorerAccountUrl = (account: string, cluster: string = 'devnet') => {
+  return `https://solscan.io/account/${account}?cluster=${cluster}`
+}
+
 // Derive PDA safely
 function derivePDA(seeds: (Buffer | Uint8Array)[], programId: PublicKey): [PublicKey, number] {
   try {
