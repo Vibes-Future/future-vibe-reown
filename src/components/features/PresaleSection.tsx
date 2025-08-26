@@ -194,7 +194,7 @@ Go to the "Claims" section to claim your tokens when they are available.
         <div className="absolute inset-0 bg-BG-FFF-8/80 backdrop-blur-sm rounded-2xl flex items-center justify-center z-10">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-1 mx-auto mb-4"></div>
-            <p className="text-primary-1 font-medium">Cargando estadísticas del presale...</p>
+                         <p className="text-primary-1 font-medium">Loading presale statistics...</p>
           </div>
         </div>
       )}
@@ -215,7 +215,7 @@ Go to the "Claims" section to claim your tokens when they are available.
                 onClick={() => window.location.reload()}
                 className="text-red-400 hover:text-red-300 text-xs underline mt-2"
               >
-                Recargar página
+                                 Reload page
               </button>
             </div>
           )}
@@ -228,7 +228,7 @@ Go to the "Claims" section to claim your tokens when they are available.
                   programDeployed ? 'bg-primary-1' : 'bg-foundation-blue-50'
                 }`}></span>
                 <span className="text-sm text-foundation-blue-60">
-                  {programDeployed ? 'Smart Contract Conectado' : 'Modo Simulación'}
+                                     {programDeployed ? 'Smart Contract Connected' : 'Simulation Mode'}
                 </span>
               </div>
               <div className="text-xs text-foundation-blue-50">
@@ -240,12 +240,12 @@ Go to the "Claims" section to claim your tokens when they are available.
           {/* Current Period Info */}
           {presaleData.isActive && currentPeriod ? (
             <div className="bg-gradient-to-r from-primary-1/20 to-primary-2/20 rounded-lg p-4 border border-primary-1/30">
-              <div className="text-sm text-foundation-blue-60 mb-1">Periodo Actual</div>
+                             <div className="text-sm text-foundation-blue-60 mb-1">Current Period</div>
               <div className="text-xl font-bold text-white">
                 {currentPeriod.month} {currentPeriod.year}
               </div>
               <div className="text-sm text-primary-1">
-                ${currentPeriod.priceUSD.toFixed(4)} USD por VIBES
+                                 ${currentPeriod.priceUSD.toFixed(4)} USD per VIBES
               </div>
             </div>
           ) : nextPeriod ? (
@@ -356,13 +356,13 @@ Go to the "Claims" section to claim your tokens when they are available.
               </div>
             </div>
             <div className="bg-BG-FFF-8 rounded-lg p-4 border border-stroct-1">
-              <div className="text-sm text-foundation-blue-60">Mínimo SOL</div>
+                             <div className="text-sm text-foundation-blue-60">Minimum SOL</div>
               <div className="text-lg font-semibold text-white">
                 {presaleData.minPurchaseAmount} SOL
               </div>
             </div>
             <div className="bg-gray-700/50 rounded-lg p-4">
-              <div className="text-sm text-gray-400">Máximo SOL</div>
+                             <div className="text-sm text-gray-400">Maximum SOL</div>
               <div className="text-lg font-semibold text-white">
                 {presaleData.maxPurchaseAmount} SOL
               </div>
@@ -476,7 +476,7 @@ Go to the "Claims" section to claim your tokens when they are available.
               {paymentMethod === 'USDC' && (
                 <div>
                   <label className="block text-sm font-medium text-gray-400 mb-2">
-                    Cantidad de USDC
+                                         USDC Amount
                   </label>
                   <div className="relative">
                     <input

@@ -12,84 +12,84 @@ export interface PresalePeriod {
 // Monthly pricing schedule for VIBES token presale
 export const PRESALE_PRICING: PresalePeriod[] = [
   {
-    month: 'Julio',
+    month: 'July',
     year: 2025,
     priceUSD: 0.0598,
     startDate: new Date('2025-07-01T00:00:00Z'),
     endDate: new Date('2025-07-31T23:59:59Z')
   },
   {
-    month: 'Agosto',
+    month: 'August',
     year: 2025,
     priceUSD: 0.0658,
     startDate: new Date('2025-08-01T00:00:00Z'),
     endDate: new Date('2025-08-31T23:59:59Z')
   },
   {
-    month: 'Septiembre',
+    month: 'September',
     year: 2025,
     priceUSD: 0.0718,
     startDate: new Date('2025-09-01T00:00:00Z'),
     endDate: new Date('2025-09-30T23:59:59Z')
   },
   {
-    month: 'Octubre',
+    month: 'October',
     year: 2025,
     priceUSD: 0.0777,
     startDate: new Date('2025-10-01T00:00:00Z'),
     endDate: new Date('2025-10-31T23:59:59Z')
   },
   {
-    month: 'Diciembre',
+    month: 'December',
     year: 2025,
     priceUSD: 0.0837,
     startDate: new Date('2025-12-01T00:00:00Z'),
     endDate: new Date('2025-12-31T23:59:59Z')
   },
   {
-    month: 'Enero',
+    month: 'January',
     year: 2026,
     priceUSD: 0.0897,
     startDate: new Date('2026-01-01T00:00:00Z'),
     endDate: new Date('2026-01-31T23:59:59Z')
   },
   {
-    month: 'Febrero',
+    month: 'February',
     year: 2026,
     priceUSD: 0.0957,
     startDate: new Date('2026-02-01T00:00:00Z'),
     endDate: new Date('2026-02-28T23:59:59Z')
   },
   {
-    month: 'Marzo',
+    month: 'March',
     year: 2026,
     priceUSD: 0.1017,
     startDate: new Date('2026-03-01T00:00:00Z'),
     endDate: new Date('2026-03-31T23:59:59Z')
   },
   {
-    month: 'Abril',
+    month: 'April',
     year: 2026,
     priceUSD: 0.1047,
     startDate: new Date('2026-04-01T00:00:00Z'),
     endDate: new Date('2026-04-30T23:59:59Z')
   },
   {
-    month: 'Mayo',
+    month: 'May',
     year: 2026,
     priceUSD: 0.1077,
     startDate: new Date('2026-05-01T00:00:00Z'),
     endDate: new Date('2026-05-31T23:59:59Z')
   },
   {
-    month: 'Junio',
+    month: 'June',
     year: 2026,
     priceUSD: 0.1107,
     startDate: new Date('2026-06-01T00:00:00Z'),
     endDate: new Date('2026-06-30T23:59:59Z')
   },
   {
-    month: 'Julio',
+    month: 'July',
     year: 2026,
     priceUSD: 0.1137,
     startDate: new Date('2026-07-01T00:00:00Z'),

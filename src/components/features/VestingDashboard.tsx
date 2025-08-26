@@ -65,12 +65,12 @@ export function VestingDashboard() {
         const result = await smartClaimTokens(period)
         
         if (result.success) {
-          alert(`¡Tokens reclamados exitosamente desde Blockchain!
-          
-🎉 Has reclamado ${formatTokens(result.claimedAmount || 0)} VIBES tokens
-📅 Período: ${period + 1}
-🔗 Transacción: ${result.signature}
-🔍 Ver en Solscan: ${result.explorerUrl}`)
+                     alert(`Tokens claimed successfully from Blockchain!
+           
+🎉 You have claimed ${formatTokens(result.claimedAmount || 0)} VIBES tokens
+📅 Period: ${period + 1}
+🔗 Transaction: ${result.signature}
+🔍 View on Solscan: ${result.explorerUrl}`)
         } else {
           throw new Error(result.error || 'Smart contract claim failed')
         }
@@ -78,11 +78,11 @@ export function VestingDashboard() {
         // Use legacy simulation claim
         console.log('🎮 Using Simulation Mode for claim')
         await legacyClaimTokens(purchaseId, period)
-        alert('¡Tokens reclamados exitosamente (Simulación)!')
+                 alert('Tokens claimed successfully (Simulation)!')
       }
     } catch (error) {
       console.error('Claim error:', error)
-      alert('Error al reclamar tokens. Intenta de nuevo.')
+             alert('Error claiming tokens. Please try again.')
     } finally {
       setClaimingPurchaseId(null)
       setClaimingPeriod(null)
@@ -94,7 +94,7 @@ export function VestingDashboard() {
       <div className="bg-BG-FFF-8 backdrop-blur-sm rounded-2xl p-8 border border-stroct-1">
         <div className="text-center">
           <h3 className="my-text-24 gap-mb-16 gradient-text-primary">Vesting & Claims</h3>
-          <p className="text-foundation-blue-60">Conecta tu wallet para ver tus compras y reclamar tokens</p>
+                     <p className="text-foundation-blue-60">Connect your wallet to see your purchases and claim tokens</p>
         </div>
       </div>
     )
